@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados das Loterias</title>
+<style>
+  :root{
+    --bg: #f2f7f3;
+    --ink: #0f3d28;
+    --ink-soft: #4c6b5a;
+    --line: rgba(15,61,40,0.14);
+    --panel: #ffffff;
+    --accent: #1f9d55;
+    --accent-gold: #c9a13b;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family:'Segoe UI', system-ui, sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+  }
+
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 5vw;
+    background:var(--ink);
+  }
+  .logo{ font-family:Georgia, 'Times New Roman', serif; font-size:20px; color:var(--bg); }
+  nav{ display:flex; gap:32px; }
+  nav a{ color:rgba(242,247,243,0.75); text-decoration:none; font-size:14px; cursor:pointer; }
+  nav a:hover{ color:var(--bg); }
+  nav a.active{ color:var(--bg); font-weight:600; }
+  .nav-toggle{ display:none; background:none; border:none; font-size:22px; color:var(--bg); cursor:pointer; }
+
+  /* ---------- AVATAR / CONTA (cabeçalho) ---------- */
+  .conta-badge{ position:relative; margin-left:18px; }
+  .avatar-circle{
+    width:34px; height:34px; border-radius:50%;
+    background:var(--accent-gold); color:var(--ink);
+    border:none; cursor:pointer;
+    font-size:13px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .conta-dropdown{
+    display:none;
+    position:absolute; top:44px; right:0;
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:8px; min-width:190px;
+    box-shadow:0 10px 28px rgba(38,36,31,0.14);
+    padding:6px; z-index:20;
+  }
+  .conta-dropdown.open{ display:block; }
+  .conta-dropdown-email{
+    font-size:12px; color:var(--ink-soft);
+    padding:8px 10px; border-bottom:1px solid var(--line);
+    margin-bottom:4px; word-break:break-all;
+  }
+  .conta-dropdown-item{
+    display:block; width:100%; text-align:left;
+    background:none; border:none; cursor:pointer;
+    padding:9px 10px; font-size:13.5px; color:var(--ink);
+    border-radius:5px;
+  }
+  .conta-dropdown-item:hover{ background:var(--bg); }
+
+  main{ max-width:820px; margin:0 auto; padding:56px 5vw 90px; }
+
+  .page-head{ margin-bottom:36px; }
+  .page-head .eyebrow{
+    font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-soft); margin-bottom:12px;
+  }
+  .page-head h1{
+    font-family:Georgia, serif; font-weight:400;
+    font-size:clamp(28px, 4vw, 38px); margin-bottom:10px;
+  }
+  .page-head p{ color:var(--ink-soft); font-size:14.5px; max-width:520px; line-height:1.6; }
+
+  /* ---------- BOTÕES DE CHAMADA (Início) ---------- */
+  .cta-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:26px; }
+  .cta-btn{
+    display:inline-block;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:600;
+    padding:13px 24px;
+    border-radius:24px;
+    cursor:pointer;
+  }
+  .cta-btn.primary{ background:var(--accent); color:#fff; }
+  .cta-btn.primary:hover{ background:var(--ink); }
+  .cta-btn.secondary{ background:transparent; color:var(--ink); border:1.5px solid var(--line); }
+  .cta-btn.secondary:hover{ border-color:var(--accent); color:var(--accent); }
+
+  .cta-dicas-card{
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+    background:var(--ink); color:var(--bg);
+  }
+  .cta-dicas-icone{ font-size:26px; flex-shrink:0; }
+  .cta-dicas-texto{ flex:1; min-width:200px; }
+  .cta-dicas-texto h3{ font-family:Georgia, serif; font-weight:400; font-size:16px; margin-bottom:4px; }
+  .cta-dicas-texto p{ font-size:13px; color:rgba(242,247,243,0.7); line-height:1.5; }
+  .cta-dicas-card .cta-btn.primary{ background:var(--accent-gold); color:var(--ink); flex-shrink:0; }
+  .cta-dicas-card .cta-btn.primary:hover{ background:#fff; }
+
+  /* ---------- GRADE DE LOTERIAS (tela inicial) ---------- */
+  .loteria-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+    gap:12px;
+    margin-bottom:36px;
+  }
+  .loteria-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:18px 16px;
+    cursor:pointer;
+    text-align:left;
+    position:relative;
+    overflow:hidden;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .loteria-card:hover{ transform:translateY(-2px); box-shadow:0 8px 20px rgba(38,36,31,0.08); }
+  .loteria-card::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--cor);
+  }
+  .loteria-card .monograma svg{
+    width:26px; height:26px;
+    color:var(--cor);
+    margin-bottom:14px;
+    display:block;
+  }
+  .loteria-card .nome{
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .loteria-card .ultimo{
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- DETALHE DE UMA LOTERIA ---------- */
+  #detail-view{ display:none; }
+  .voltar{
+    display:inline-flex; align-items:center; gap:6px;
+    background:none; border:none; color:var(--ink-soft);
+    font-size:13px; cursor:pointer; margin-bottom:20px; padding:0;
+  }
+  .voltar:hover{ color:var(--ink); }
+  .detail-head{
+    display:flex; align-items:center; gap:12px; margin-bottom:20px;
+  }
+  .detail-head .monograma-grande{
+    width:52px; height:52px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--cor-detalhe, var(--ink));
+    flex-shrink:0;
+  }
+  .detail-head .monograma-grande svg{
+    width:26px; height:26px;
+    color:#fff;
+  }
+  .detail-head h2{ font-family:Georgia, serif; font-weight:400; font-size:22px; }
+
+  section.card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:22px;
+    margin-bottom:28px;
+  }
+  section.card h2{
+    font-family:Georgia, serif; font-weight:400; font-size:17px;
+    margin-bottom:4px;
+  }
+  .atualizado{ font-size:12px; color:var(--ink-soft); margin-bottom:16px; }
+
+  .draw-row{
+    display:flex; align-items:center; gap:14px;
+    padding:12px 0; border-bottom:1px solid var(--line); flex-wrap:wrap;
+  }
+  .draw-row:last-child{ border-bottom:none; }
+  .draw-meta{ min-width:130px; font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
+  .draw-meta strong{ color:var(--ink); display:block; font-size:14px; }
+  .balls{ display:flex; flex-wrap:wrap; gap:5px; flex:1; }
+  .ball{
+    width:26px; height:26px; border-radius:50%;
+    background:var(--bg); border:1.5px solid var(--line);
+    color:var(--ink); display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:600;
+  }
+  .winners-tag{ font-size:11px; color:var(--accent-gold); white-space:nowrap; }
+
+  /* ---------- PAYWALL / BOT ---------- */
+  #paywall{ text-align:center; padding:30px 16px; }
+  #paywall .cadeado{ font-size:26px; margin-bottom:8px; }
+  #paywall h3{ font-family:Georgia, serif; font-weight:400; font-size:18px; margin-bottom:8px; }
+  #paywall p{ font-size:13.5px; color:var(--ink-soft); max-width:380px; margin:0 auto 18px; line-height:1.6; }
+  #btn-desbloquear{
+    background:var(--ink); color:var(--bg); border:none;
+    border-radius:24px; padding:12px 24px; font-weight:600; font-size:14px; cursor:pointer;
+  }
+  #btn-desbloquear:disabled{ opacity:.6; cursor:wait; }
+  #paywall .preco{ font-size:12px; color:var(--accent-gold); margin-top:10px; }
+  #conteudo-dicas{ display:none; }
+  #criar-senha-box{ text-align:center; padding:30px 16px; display:none; }
+  #erro-pagamento{ color:#a4453a; font-size:12.5px; margin-top:12px; display:none; }
+
+  .loteria-select{
+    display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;
+  }
+  .loteria-select button{
+    background:var(--bg); border:1px solid var(--line); color:var(--ink-soft);
+    padding:7px 14px; border-radius:16px; font-size:12.5px; cursor:pointer;
+  }
+  .loteria-select button.active{ background:var(--ink); color:var(--bg); border-color:var(--ink); }
+  .qtd-select{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+  .qtd-select button{
+    background:transparent; border:1px solid var(--accent); color:var(--accent);
+    padding:7px 14px; border-radius:16px; font-size:12.5px; cursor:pointer;
+  }
+  .qtd-select button:hover{ background:var(--accent); color:#fff; }
+
+  .combo-label{ font-size:11px; color:var(--accent-gold); text-transform:uppercase; letter-spacing:.04em; margin:12px 0 4px; }
+  .combo{ display:flex; flex-wrap:wrap; gap:5px; }
+
+  .disclaimer{
+    font-size:11.5px; color:var(--ink-soft); text-align:center;
+    margin-top:10px; line-height:1.6;
+  }
+
+  /* ---------- LOGIN / CRIAR SENHA ---------- */
+  #login-box{
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:16px;
+    margin-top:20px;
+    text-align:center;
+  }
+  #login-box p{ font-size:13px; color:var(--ink-soft); margin-bottom:10px; }
+  #login-form, #criar-senha-form{
+    display:flex; flex-direction:column; gap:8px;
+    max-width:280px; margin:0 auto;
+  }
+  #login-email, #login-senha, #criar-email, #criar-senha{
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:9px 11px;
+    font-size:13.5px;
+  }
+  #login-form button, #criar-senha-form button{
+    background:var(--ink);
+    color:var(--bg);
+    border:none;
+    border-radius:6px;
+    padding:10px 14px;
+    font-size:13px;
+    cursor:pointer;
+  }
+  #login-status, #criar-senha-status, #registro-status{ font-size:12px; color:var(--accent); margin-top:8px; min-height:16px; }
+  .link-btn{
+    background:none; border:none; color:var(--ink-soft);
+    text-decoration:underline; cursor:pointer; font-size:12px;
+    margin-top:10px; padding:0;
+  }
+  #conta-logada p{ font-size:13px; color:var(--ink-soft); margin-bottom:8px; }
+  #conta-logada strong{ color:var(--ink); }
+  #criar-senha-box{ text-align:center; padding:30px 16px; }
+  #criar-senha-box h3{ font-family:Georgia, serif; font-weight:400; font-size:18px; margin-bottom:8px; }
+  #criar-senha-box p{ font-size:13.5px; color:var(--ink-soft); max-width:360px; margin:0 auto 18px; line-height:1.6; }
+  #nova-senha-box{ text-align:center; padding:30px 16px; }
+  #nova-senha-box h3{ font-family:Georgia, serif; font-weight:400; font-size:18px; margin-bottom:8px; }
+  #nova-senha-box p{ font-size:13.5px; color:var(--ink-soft); max-width:360px; margin:0 auto 18px; line-height:1.6; }
+  #nova-senha-box form{ display:flex; flex-direction:column; gap:8px; max-width:280px; margin:0 auto; }
+  #nova-senha-input{ border:1px solid var(--line); border-radius:6px; padding:9px 11px; font-size:13.5px; }
+  #nova-senha-box button{ background:var(--ink); color:var(--bg); border:none; border-radius:6px; padding:10px 14px; font-size:13px; cursor:pointer; }
+  #nova-senha-status{ font-size:12px; color:var(--accent); margin-top:8px; min-height:16px; }
+
+  .conta-info{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    font-size:12.5px; color:var(--ink-soft); margin-bottom:14px;
+  }
+  .conta-info button{
+    background:none; border:none; color:var(--ink-soft);
+    text-decoration:underline; cursor:pointer; font-size:12.5px; padding:0;
+  }
+
+  @media (max-width:720px){
+    nav{
+      position:fixed; inset:0 0 0 auto; width:70%; height:100vh;
+      background:var(--panel); flex-direction:column; padding:90px 28px; gap:24px;
+      transform:translateX(100%); transition:transform .2s ease;
+    }
+    nav.open{ transform:translateX(0); }
+    .nav-toggle{ display:block; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Sua Marca</div>
+  <nav id="menu">
+    <a href="#" data-view="inicio" class="nav-link active">Início</a>
+    <a href="#" data-view="resultados" class="nav-link">Resultados</a>
+    <a href="#" data-view="dicas" class="nav-link">Dicas</a>
+    <a href="#" data-view="contato" class="nav-link">Contato</a>
+  </nav>
+  <div class="conta-badge" id="conta-badge" style="display:none">
+    <button class="avatar-circle" id="avatar-btn"></button>
+    <div class="conta-dropdown" id="conta-dropdown">
+      <div class="conta-dropdown-email" id="conta-dropdown-email"></div>
+      <button class="conta-dropdown-item" id="btn-perfil">Perfil</button>
+      <button class="conta-dropdown-item" id="btn-sair-global">Sair</button>
+    </div>
+  </div>
+  <button class="nav-toggle" id="navToggle" aria-label="Abrir menu">☰</button>
+</header>
+
+<main>
+
+  <!-- ===================== INÍCIO ===================== -->
+  <section id="view-inicio" class="view">
+    <div class="page-head">
+      <div class="eyebrow">Bem-vindo</div>
+      <h1>Resultados das loterias, na hora certa</h1>
+      <p>Esse site tem duas partes: os resultados oficiais de todas as
+      principais loterias da Caixa, atualizados automaticamente e sempre
+      grátis — e um gerador de dicas de jogo, baseado na frequência dos
+      últimos sorteios, liberado com um pagamento único.</p>
+    </div>
+    <div class="cta-row">
+      <a href="#" data-view="resultados" class="nav-link cta-btn primary">Ver resultados</a>
+      <a href="#" data-view="dicas" class="nav-link cta-btn secondary">Pedir uma dica</a>
+    </div>
+  </section>
+
+  <!-- ===================== RESULTADOS ===================== -->
+  <section id="view-resultados" class="view" style="display:none">
+    <div class="page-head">
+      <div class="eyebrow">Atualizado automaticamente</div>
+      <h1>Resultados das loterias</h1>
+      <p>Acompanhe os últimos sorteios de hoje, ontem e da semana — direto da
+      fonte oficial da Caixa. Grátis, sempre.</p>
+    </div>
+
+    <div id="home-grid" class="loteria-grid"></div>
+
+    <div id="detail-view">
+      <button class="voltar" id="btn-voltar">← Todas as loterias</button>
+      <div class="detail-head">
+        <div class="monograma-grande" id="detail-monograma"></div>
+        <h2 id="titulo-resultados">Últimos sorteios</h2>
+      </div>
+      <section class="card">
+        <div class="atualizado" id="atualizado-em">Carregando...</div>
+        <div id="tabela-resultados"></div>
+      </section>
+
+      <section class="card cta-dicas-card">
+        <div class="cta-dicas-icone">🔒</div>
+        <div class="cta-dicas-texto">
+          <h3>Quer uma dica baseada nesses resultados?</h3>
+          <p>Depois de comprar, o gerador analisa a frequência dos números
+          sorteados aqui e monta 5 combinações pra você jogar.</p>
+        </div>
+        <button id="btn-ir-para-dicas" class="cta-btn primary">Peça sua dica</button>
+      </section>
+    </div>
+  </section>
+
+  <!-- ===================== DICAS ===================== -->
+  <section id="view-dicas" class="view" style="display:none">
+    <div class="page-head">
+      <div class="eyebrow">Pagamento único · R$ 19,90</div>
+      <h1>Gerador de dicas</h1>
+      <p>Combinações de números geradas com base na frequência dos últimos
+      sorteios. Escolha a loteria e peça sua dica.</p>
+    </div>
+
+    <section class="card">
+      <div class="loteria-select" id="dica-loteria-select"></div>
+
+      <div id="paywall">
+        <div class="cadeado">🔒</div>
+        <h3>Peça dicas de jogo</h3>
+        <p>Desbloqueie o gerador de combinações baseado na frequência dos
+        últimos sorteios.</p>
+        <button id="btn-desbloquear">Desbloquear dicas</button>
+        <div class="preco">Pagamento único · R$ 19,90</div>
+        <div id="erro-pagamento">Não consegui confirmar o pagamento. Tente novamente.</div>
+
+        <div id="conta-box">
+          <div id="conta-logada" style="display:none">
+            <p>Já é só clicar em "Desbloquear dicas" acima — você está logado, não precisa criar conta de novo.</p>
+          </div>
+
+          <div id="conta-formularios">
+            <div id="login-box">
+              <p>Já tem conta? Entre com seu e-mail e senha:</p>
+              <form id="login-form">
+                <input type="email" id="login-email" placeholder="seuemail@exemplo.com" required>
+                <input type="password" id="login-senha" placeholder="senha" required minlength="6">
+                <button type="submit">Entrar</button>
+              </form>
+              <div id="login-status"></div>
+              <button id="btn-mostrar-registro" class="link-btn">Ainda não tem conta? Registre-se grátis</button>
+              <button id="btn-mostrar-esqueci" class="link-btn">Esqueci minha senha</button>
+            </div>
+
+            <div id="esqueci-senha-box" style="display:none">
+              <p>Digite seu e-mail — vamos mandar um link pra você criar uma senha nova:</p>
+              <form id="esqueci-senha-form">
+                <input type="email" id="esqueci-senha-email" placeholder="seuemail@exemplo.com" required>
+                <button type="submit">Enviar link de recuperação</button>
+              </form>
+              <div id="esqueci-senha-status"></div>
+              <button id="btn-voltar-login" class="link-btn">Voltar pro login</button>
+            </div>
+
+            <div id="registro-box" style="display:none">
+              <p>Criar conta é grátis — não cobra nada até você comprar o gerador de dicas:</p>
+              <form id="registro-form">
+                <input type="email" id="registro-email" placeholder="seuemail@exemplo.com" required>
+                <input type="password" id="registro-senha" placeholder="crie uma senha" required minlength="6">
+                <button type="submit">Criar conta grátis</button>
+              </form>
+              <div id="registro-status"></div>
+              <button id="btn-mostrar-login" class="link-btn">Já tem conta? Entrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="criar-senha-box" style="display:none">
+        <div class="cadeado">✅</div>
+        <h3>Pagamento confirmado!</h3>
+        <p>Crie uma senha pra acessar suas dicas sempre que quiser, em
+        qualquer aparelho.</p>
+        <form id="criar-senha-form">
+          <input type="email" id="criar-email" placeholder="seuemail@exemplo.com" required>
+          <input type="password" id="criar-senha" placeholder="crie uma senha" required minlength="6">
+          <button type="submit">Criar acesso</button>
+        </form>
+        <div id="criar-senha-status"></div>
+      </div>
+
+      <div id="nova-senha-box" style="display:none">
+        <div class="cadeado">🔑</div>
+        <h3>Crie sua nova senha</h3>
+        <p>Digite a nova senha que você quer usar daqui pra frente.</p>
+        <form id="nova-senha-form">
+          <input type="password" id="nova-senha-input" placeholder="nova senha" required minlength="6">
+          <button type="submit">Salvar nova senha</button>
+        </form>
+        <div id="nova-senha-status"></div>
+      </div>
+
+      <div id="conteudo-dicas">
+        <div class="qtd-select" id="dica-qtd-select"></div>
+        <div id="dica-resultado"></div>
+      </div>
+    </section>
+
+    <p class="disclaimer">
+      Sorteios de loteria são aleatórios. As dicas geradas aqui são combinações
+      baseadas em frequência estatística dos últimos resultados — isso não
+      aumenta as chances reais de acerto nem garante nenhum resultado. Jogue
+      com responsabilidade.
+    </p>
+  </section>
+
+  <!-- ===================== CONTATO ===================== -->
+  <section id="view-contato" class="view" style="display:none">
+    <div class="page-head">
+      <div class="eyebrow">Fale com a gente</div>
+      <h1>Contato</h1>
+      <p>Dúvidas, sugestões ou problema com algum pagamento — é só mandar um e-mail.</p>
+    </div>
+    <section class="card">
+      <p style="font-size:14px;">
+        <a href="mailto:seuemail@exemplo.com" style="color:var(--ink); font-weight:600;">seuemail@exemplo.com</a>
+      </p>
+    </section>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ============================================================
+// CONFIGURAÇÃO
+// ============================================================
+// Resultados vêm direto dessa API pública (sem passar pelo Supabase):
+// https://github.com/guto-alves/loterias-api
+const API_BASE = "https://loteriascaixa-api.herokuapp.com/api";
+const QTD_HISTORICO = 5; // quantos concursos anteriores buscar por loteria
+
+// Quantos números SEGUIDOS (ex: 95, 96, 97) podem aparecer numa mesma dica.
+// 2 = permite pares seguidos (ex: 95 e 96), mas nunca 3 em sequência.
+// Aumente esse valor pra permitir sequências maiores, ou coloque um número
+// bem alto (ex: 999) pra desativar essa regra e voltar ao sorteio 100% livre.
+const MAX_SEQUENCIA_PERMITIDA = 2;
+
+const API_CRIAR_CHECKOUT = "https://xeaqteghrednlqqkglzd.supabase.co/functions/v1/loterias-criar-checkout";
+const API_VERIFICAR_PAGAMENTO = "https://xeaqteghrednlqqkglzd.supabase.co/functions/v1/loterias-verificar-pagamento";
+const ATUALIZAR_A_CADA_MS = 5 * 60 * 1000; // 5 minutos
+
+// Dados do seu projeto Supabase (a chave "anon"/publicável é pública, pode ficar no HTML)
+const SUPABASE_URL = "https://xeaqteghrednlqqkglzd.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_6r4fBlE9MGio9sKrSrYa8w_NTp5gl0y";
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// As Edge Functions do Supabase exigem esse cabeçalho de autenticação em
+// toda chamada — mesmo pra funções "públicas" como essas.
+function cabecalhosFunction(){
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    'apikey': SUPABASE_ANON_KEY,
+  };
+}
+
+// Ícone de trevo (4 folhas), estilo simplificado, cor herdada via currentColor
+const ICONE_TREVO = `
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 12c0-2.8-2-5-4.5-5S3 9.2 3 12s2 5 4.5 5c1.6 0 3-1 3.8-2.4"
+    fill="currentColor" opacity="0.9"/>
+  <path d="M12 12c0-2.8 2-5 4.5-5S21 9.2 21 12s-2 5-4.5 5c-1.6 0-3-1-3.8-2.4"
+    fill="currentColor" opacity="0.9"/>
+  <path d="M12 12c-2.8 0-5-2-5-4.5S9.2 3 12 3s5 2 5 4.5c0 1.6-1 3-2.4 3.8"
+    fill="currentColor" opacity="0.75"/>
+  <path d="M12 21v-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+</svg>`;
+
+const LOTERIAS = [
+  { id: "megasena",   nome: "Mega-Sena",    min: 1, max: 60,  dicas: [6, 7, 8],   cor: "#3d6b52" },
+  { id: "lotofacil",  nome: "Lotofácil",    min: 1, max: 25,  dicas: [13,14,15],  cor: "#7a4a8f" },
+  { id: "quina",      nome: "Quina",        min: 1, max: 80,  dicas: [5, 6, 7],   cor: "#2f4f7a" },
+  { id: "lotomania",  nome: "Lotomania",    min: 1, max: 100, dicas: [50],        cor: "#b8722f" },
+  { id: "duplasena",  nome: "Dupla Sena",   min: 1, max: 50,  dicas: [6, 7],      cor: "#8f3a3a" },
+  { id: "diadesorte", nome: "Dia de Sorte", min: 1, max: 31,  dicas: [7, 8],      cor: "#b0942e" },
+  { id: "timemania",  nome: "Timemania",    min: 1, max: 80,  dicas: [10],        cor: "#2f7a6b" },
+];
+
+let dadosLoterias = {};
+let loteriaAtiva = null;
+let loteriaDicaAtiva = "megasena";
+
+// ---------- Navegação entre seções (tudo na mesma página) ----------
+function mostrarView(nome){
+  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  document.getElementById(`view-${nome}`).style.display = 'block';
+  document.querySelectorAll('.nav-link').forEach(a => a.classList.remove('active'));
+  document.querySelectorAll(`.nav-link[data-view="${nome}"]`).forEach(a => a.classList.add('active'));
+  document.getElementById('menu').classList.remove('open'); // fecha o menu mobile
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    mostrarView(link.dataset.view);
+  });
+});
+
+document.getElementById('btn-ir-para-dicas').addEventListener('click', () => {
+  mostrarView('dicas');
+});
+
+// ---------- Seletor de loteria dentro de "Dicas" ----------
+function montarSeletorLoteriaDicas(){
+  const el = document.getElementById('dica-loteria-select');
+  el.innerHTML = LOTERIAS.map(l =>
+    `<button data-id="${l.id}" class="${l.id === loteriaDicaAtiva ? 'active' : ''}">${l.nome}</button>`
+  ).join('');
+  el.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      loteriaDicaAtiva = btn.dataset.id;
+      montarSeletorLoteriaDicas();
+      if(document.getElementById('paywall').style.display === 'none'){
+        montarSeletorDicas();
+      }
+    });
+  });
+}
+montarSeletorLoteriaDicas();
+
+// ---------- Menu mobile ----------
+document.getElementById('navToggle').addEventListener('click', () => {
+  document.getElementById('menu').classList.toggle('open');
+});
+
+// ---------- Tela inicial: grade de loterias ----------
+function montarGrade(){
+  const gridEl = document.getElementById('home-grid');
+  gridEl.innerHTML = LOTERIAS.map(l => {
+    const info = dadosLoterias[l.id];
+    const ultimo = info && info.resultados && info.resultados[0]
+      ? `Concurso ${info.resultados[0].concurso} · ${formatarData(info.resultados[0].data)}`
+      : 'Carregando...';
+    return `
+      <button class="loteria-card" style="--cor:${l.cor}" data-id="${l.id}">
+        <div class="monograma">${ICONE_TREVO}</div>
+        <div class="nome">${l.nome}</div>
+        <div class="ultimo">${ultimo}</div>
+      </button>
+    `;
+  }).join('');
+  gridEl.querySelectorAll('.loteria-card').forEach(card => {
+    card.addEventListener('click', () => abrirDetalhe(card.dataset.id));
+  });
+}
+
+function abrirDetalhe(id){
+  loteriaAtiva = id;
+  loteriaDicaAtiva = id;
+  montarSeletorLoteriaDicas();
+  const config = LOTERIAS.find(l => l.id === id);
+  document.getElementById('home-grid').style.display = 'none';
+  document.getElementById('detail-view').style.display = 'block';
+  const monoEl = document.getElementById('detail-monograma');
+  monoEl.innerHTML = ICONE_TREVO;
+  monoEl.style.background = config.cor;
+  renderizarResultados();
+  if(document.getElementById('conteudo-dicas').style.display === 'block'){
+    montarSeletorDicas();
+  }
+}
+
+document.getElementById('btn-voltar').addEventListener('click', () => {
+  document.getElementById('home-grid').style.display = 'grid';
+  document.getElementById('detail-view').style.display = 'none';
+  loteriaAtiva = null;
+});
+
+function formatarData(dataStr){
+  if(!dataStr) return '';
+  return dataStr.includes('/') ? dataStr : new Date(dataStr).toLocaleDateString('pt-BR');
+}
+
+function renderizarResultados(){
+  if(!loteriaAtiva) return;
+  const info = dadosLoterias[loteriaAtiva];
+  const config = LOTERIAS.find(l => l.id === loteriaAtiva);
+  const tituloEl = document.getElementById('titulo-resultados');
+  const tabelaEl = document.getElementById('tabela-resultados');
+  tituloEl.textContent = config.nome;
+
+  if(!info || info.erro || !info.resultados){
+    tabelaEl.innerHTML = '<div class="atualizado">Não consegui carregar esse resultado agora.</div>';
+    return;
+  }
+
+  tabelaEl.innerHTML = info.resultados.slice(0, 7).map(r => `
+    <div class="draw-row">
+      <div class="draw-meta">
+        <strong>Concurso ${r.concurso}</strong>
+        ${formatarData(r.data)}
+      </div>
+      <div class="balls">
+        ${r.dezenas.map(n => `<div class="ball">${String(n).padStart(2,'0')}</div>`).join('')}
+      </div>
+      <div class="winners-tag">
+        ${r.ganhadoresPremioMax > 0 ? r.ganhadoresPremioMax + ' ganhador(es)' : 'acumulou'}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ---------- Buscar resultados (com atualização automática) ----------
+function formatarResultadoDaApi(json){
+  const premioMax = (json.premiacoes || [])[0] || {};
+  return {
+    concurso: json.concurso,
+    data: json.data,
+    dezenas: (json.dezenas || []).map(Number).sort((a, b) => a - b),
+    acumulou: json.acumulou,
+    ganhadoresPremioMax: premioMax.ganhadores || 0,
+    valorPremioMax: premioMax.valorPremio || 0,
+  };
+}
+
+async function buscarLoteria(loteriaId, qtd){
+  const latestResp = await fetch(`${API_BASE}/${loteriaId}/latest`);
+  if(!latestResp.ok) throw new Error(`Falha ao buscar ${loteriaId}`);
+  const latestJson = await latestResp.json();
+  const concursoAtual = latestJson.concurso;
+
+  const resultados = [formatarResultadoDaApi(latestJson)];
+  const numeros = [];
+  for(let i = 1; i < qtd; i++) numeros.push(concursoAtual - i);
+
+  const respostas = await Promise.all(
+    numeros.map(n =>
+      fetch(`${API_BASE}/${loteriaId}/${n}`)
+        .then(r => (r.ok ? r.json() : null))
+        .catch(() => null)
+    )
+  );
+
+  respostas.forEach(json => { if(json) resultados.push(formatarResultadoDaApi(json)); });
+  resultados.sort((a, b) => b.concurso - a.concurso);
+  return { concursoAtual, resultados };
+}
+
+async function carregarResultados(){
+  try{
+    const entradas = await Promise.all(
+      LOTERIAS.map(async l => {
+        try{ return [l.id, await buscarLoteria(l.id, QTD_HISTORICO)]; }
+        catch{ return [l.id, { erro: true }]; }
+      })
+    );
+    dadosLoterias = Object.fromEntries(entradas);
+    document.getElementById('atualizado-em').textContent =
+      'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    montarGrade();
+    renderizarResultados();
+  }catch(err){
+    console.error(err);
+    document.getElementById('atualizado-em').textContent =
+      'Não consegui buscar os resultados agora. Tente recarregar a página.';
+  }
+}
+
+// ---------- Login / Registro (e-mail + senha) ----------
+let usuarioAtual = null;
+
+async function verificarLogin(){
+  const { data } = await supabaseClient.auth.getUser();
+  usuarioAtual = data?.user || null;
+  atualizarInterfaceLogin();
+  return usuarioAtual;
+}
+
+function atualizarInterfaceLogin(){
+  const contaLogada = document.getElementById('conta-logada');
+  const contaFormularios = document.getElementById('conta-formularios');
+  const contaBadge = document.getElementById('conta-badge');
+  const avatarBtn = document.getElementById('avatar-btn');
+  const dropdownEmail = document.getElementById('conta-dropdown-email');
+
+  if(usuarioAtual){
+    contaLogada.style.display = 'block';
+    contaFormularios.style.display = 'none';
+    contaBadge.style.display = 'block';
+    avatarBtn.textContent = usuarioAtual.email.charAt(0).toUpperCase();
+    dropdownEmail.textContent = usuarioAtual.email;
+  }else{
+    contaLogada.style.display = 'none';
+    contaFormularios.style.display = 'block';
+    contaBadge.style.display = 'none';
+  }
+}
+
+// abrir/fechar o menu do avatar
+document.getElementById('avatar-btn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('conta-dropdown').classList.toggle('open');
+});
+document.addEventListener('click', () => {
+  document.getElementById('conta-dropdown').classList.remove('open');
+});
+document.getElementById('btn-perfil').addEventListener('click', () => {
+  mostrarView('dicas');
+  document.getElementById('conta-dropdown').classList.remove('open');
+});
+
+// alternar entre "Entrar" e "Registrar"
+document.getElementById('btn-mostrar-registro').addEventListener('click', () => {
+  document.getElementById('login-box').style.display = 'none';
+  document.getElementById('registro-box').style.display = 'block';
+});
+document.getElementById('btn-mostrar-login').addEventListener('click', () => {
+  document.getElementById('registro-box').style.display = 'none';
+  document.getElementById('esqueci-senha-box').style.display = 'none';
+  document.getElementById('login-box').style.display = 'block';
+});
+
+// alternar pra "Esqueci minha senha"
+document.getElementById('btn-mostrar-esqueci').addEventListener('click', () => {
+  document.getElementById('login-box').style.display = 'none';
+  document.getElementById('esqueci-senha-box').style.display = 'block';
+});
+document.getElementById('btn-voltar-login').addEventListener('click', () => {
+  document.getElementById('esqueci-senha-box').style.display = 'none';
+  document.getElementById('login-box').style.display = 'block';
+});
+
+document.getElementById('esqueci-senha-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('esqueci-senha-email').value.trim();
+  const statusEl = document.getElementById('esqueci-senha-status');
+  statusEl.textContent = 'Enviando...';
+  try{
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname
+    });
+    if(error) throw error;
+    statusEl.textContent = 'Link enviado! Confira seu e-mail (e o spam).';
+  }catch(err){
+    console.error(err);
+    statusEl.textContent = 'Não consegui enviar o link. Confira o e-mail e tente de novo.';
+  }
+});
+
+// detecta quando a pessoa volta pelo link de recuperação do e-mail
+supabaseClient.auth.onAuthStateChange((event) => {
+  if(event === 'PASSWORD_RECOVERY'){
+    document.getElementById('paywall').style.display = 'none';
+    document.getElementById('criar-senha-box').style.display = 'none';
+    document.getElementById('conteudo-dicas').style.display = 'none';
+    document.getElementById('nova-senha-box').style.display = 'block';
+  }
+});
+
+document.getElementById('nova-senha-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const novaSenha = document.getElementById('nova-senha-input').value;
+  const statusEl = document.getElementById('nova-senha-status');
+  const btn = e.target.querySelector('button');
+  btn.disabled = true;
+  statusEl.textContent = 'Salvando...';
+  try{
+    const { error } = await supabaseClient.auth.updateUser({ password: novaSenha });
+    if(error) throw error;
+    statusEl.textContent = 'Senha alterada! Redirecionando...';
+    window.history.replaceState({}, '', window.location.pathname);
+    await verificarLogin();
+    document.getElementById('nova-senha-box').style.display = 'none';
+    if(await jaEstaDesbloqueado()){
+      mostrarConteudoDicas();
+    }else{
+      document.getElementById('paywall').style.display = 'block';
+    }
+  }catch(err){
+    console.error(err);
+    statusEl.textContent = 'Erro ao salvar a nova senha. Tente novamente.';
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-senha').value;
+  const statusEl = document.getElementById('login-status');
+  statusEl.textContent = 'Entrando...';
+  try{
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
+    if(error) throw error;
+    await verificarLogin();
+    if(await jaEstaDesbloqueado()){
+      mostrarConteudoDicas();
+    }else{
+      statusEl.textContent = 'Login ok! Agora é só clicar em "Desbloquear dicas".';
+    }
+  }catch(err){
+    console.error(err);
+    statusEl.textContent = 'E-mail ou senha incorretos.';
+  }
+});
+
+// registro grátis — não envolve pagamento nenhum
+document.getElementById('registro-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('registro-email').value.trim();
+  const senha = document.getElementById('registro-senha').value;
+  const statusEl = document.getElementById('registro-status');
+  statusEl.textContent = 'Criando conta...';
+  try{
+    const { data, error } = await supabaseClient.auth.signUp({ email, password: senha });
+    if(error) throw error;
+    usuarioAtual = data.user;
+    atualizarInterfaceLogin();
+    statusEl.textContent = '';
+  }catch(err){
+    console.error(err);
+    statusEl.textContent = err.message?.toLowerCase().includes('already')
+      ? 'Já existe uma conta com esse e-mail. Tenta entrar em vez de registrar.'
+      : 'Erro ao criar conta. Tente novamente.';
+  }
+});
+
+document.getElementById('btn-sair-global').addEventListener('click', sair);
+async function sair(){
+  await supabaseClient.auth.signOut();
+  window.location.reload();
+}
+
+// ---------- Paywall / desbloqueio (vinculado à conta) ----------
+function mostrarConteudoDicas(){
+  document.getElementById('paywall').style.display = 'none';
+  document.getElementById('criar-senha-box').style.display = 'none';
+  document.getElementById('conteudo-dicas').style.display = 'block';
+  montarSeletorDicas();
+}
+
+async function jaEstaDesbloqueado(){
+  if(!usuarioAtual) return false;
+  const { data, error } = await supabaseClient
+    .from('desbloqueios')
+    .select('user_id')
+    .eq('user_id', usuarioAtual.id)
+    .maybeSingle();
+  if(error){ console.error(error); return false; }
+  return !!data;
+}
+
+async function iniciarPaywall(){
+  await verificarLogin();
+
+  if(usuarioAtual && await jaEstaDesbloqueado()){
+    mostrarConteudoDicas();
+    return;
+  }
+
+  // voltou do Stripe agora, com pagamento feito?
+  const params = new URLSearchParams(window.location.search);
+  const sessionIdPago = params.get('session_id');
+  if(sessionIdPago && params.get('pago') === '1'){
+    if(usuarioAtual){
+      // já tinha conta antes de comprar — não precisa criar senha de novo,
+      // só confirma o pagamento e libera direto
+      const resp = await fetch(API_VERIFICAR_PAGAMENTO, {
+        method: 'POST',
+        headers: cabecalhosFunction(),
+        body: JSON.stringify({ sessionId: sessionIdPago, userId: usuarioAtual.id })
+      });
+      const dados = await resp.json();
+      window.history.replaceState({}, '', window.location.pathname); // limpa a URL sempre, mesmo se falhar
+      if(dados.pago){
+        mostrarConteudoDicas();
+      }else{
+        document.getElementById('erro-pagamento').style.display = 'block';
+      }
+    }else{
+      // não tinha conta — pede pra criar (registro pós-pagamento, fallback)
+      document.getElementById('paywall').style.display = 'none';
+      document.getElementById('criar-senha-box').style.display = 'block';
+      document.getElementById('criar-senha-form').dataset.sessionId = sessionIdPago;
+    }
+  }
+}
+
+document.getElementById('criar-senha-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const sessionId = e.target.dataset.sessionId;
+  const email = document.getElementById('criar-email').value.trim();
+  const senha = document.getElementById('criar-senha').value;
+  const statusEl = document.getElementById('criar-senha-status');
+  const btn = e.target.querySelector('button');
+  btn.disabled = true;
+  statusEl.textContent = 'Criando acesso...';
+
+  try{
+    // cria a conta (sem exigir confirmação de e-mail — o pagamento já confirmou a intenção)
+    let { data, error } = await supabaseClient.auth.signUp({ email, password: senha });
+
+    // se a conta já existir, tenta logar em vez de cadastrar de novo
+    if(error && error.message?.toLowerCase().includes('already')){
+      ({ data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha }));
+    }
+    if(error) throw error;
+
+    const userId = data.user?.id;
+    if(!userId) throw new Error('Não consegui identificar o usuário criado');
+
+    // liga essa conta ao pagamento feito
+    const resp = await fetch(API_VERIFICAR_PAGAMENTO, {
+      method: 'POST',
+      headers: cabecalhosFunction(),
+      body: JSON.stringify({ sessionId, userId })
+    });
+    const dados = await resp.json();
+
+    if(dados.pago){
+      usuarioAtual = data.user;
+      atualizarInterfaceLogin();
+      mostrarConteudoDicas();
+      window.history.replaceState({}, '', window.location.pathname);
+    }else{
+      statusEl.textContent = dados.error || 'Não consegui confirmar o pagamento pra essa conta.';
+      btn.disabled = false;
+    }
+  }catch(err){
+    console.error(err);
+    statusEl.textContent = 'Erro ao criar o acesso. Tente novamente.';
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('btn-desbloquear').addEventListener('click', async () => {
+  const btn = document.getElementById('btn-desbloquear');
+  btn.disabled = true;
+  btn.textContent = 'Abrindo pagamento...';
+  try{
+    const resp = await fetch(API_CRIAR_CHECKOUT, {
+      method: 'POST',
+      headers: cabecalhosFunction(),
+      body: JSON.stringify({
+        successUrl: window.location.origin + window.location.pathname,
+        cancelUrl: window.location.origin + window.location.pathname,
+        userId: usuarioAtual ? usuarioAtual.id : null
+      })
+    });
+    const dados = await resp.json();
+    if(dados.url){ window.location.href = dados.url; }
+    else{ throw new Error('URL de checkout não retornada'); }
+  }catch(err){
+    console.error(err);
+    btn.disabled = false;
+    btn.textContent = 'Desbloquear dicas';
+    document.getElementById('erro-pagamento').style.display = 'block';
+  }
+});
+
+// ---------- Gerador de dicas ----------
+function montarSeletorDicas(){
+  const config = LOTERIAS.find(l => l.id === loteriaDicaAtiva);
+  const qtdSelEl = document.getElementById('dica-qtd-select');
+  qtdSelEl.innerHTML = config.dicas.map(n =>
+    `<button data-n="${n}">Dica de ${n} números</button>`
+  ).join('');
+  qtdSelEl.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => gerarEExibirDicas(loteriaDicaAtiva, Number(btn.dataset.n)));
+  });
+
+  document.getElementById('dica-resultado').innerHTML = '';
+}
+
+function calcularFrequencias(config){
+  const freq = {};
+  for(let n = config.min; n <= config.max; n++) freq[n] = 1;
+  const info = dadosLoterias[config.id];
+  if(info && info.resultados){
+    info.resultados.forEach(r => {
+      r.dezenas.forEach(n => { freq[n] = (freq[n] || 0) + 1; });
+    });
+  }
+  return freq;
+}
+
+function temSequenciaLonga(numerosOrdenados){
+  let seguidos = 1;
+  for(let i = 1; i < numerosOrdenados.length; i++){
+    if(numerosOrdenados[i] === numerosOrdenados[i-1] + 1){
+      seguidos++;
+      if(seguidos > MAX_SEQUENCIA_PERMITIDA) return true;
+    }else{
+      seguidos = 1;
+    }
+  }
+  return false;
+}
+
+function sortearCombo(qtdNumeros, freq, config){
+  const pool = [];
+  for(let n = config.min; n <= config.max; n++){
+    for(let i = 0; i < freq[n]; i++) pool.push(n);
+  }
+
+  let tentativasCombo = 0;
+  while(tentativasCombo < 300){
+    const escolhidos = new Set();
+    let tentativas = 0;
+    while(escolhidos.size < qtdNumeros && tentativas < 8000){
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      escolhidos.add(pick);
+      tentativas++;
+    }
+    const combo = [...escolhidos].sort((a,b) => a-b);
+    if(!temSequenciaLonga(combo)) return combo;
+    tentativasCombo++;
+  }
+  // se não achou nenhuma combinação "espalhada" em 300 tentativas
+  // (raro, geralmente só em loterias com poucos números disponíveis),
+  // devolve a última mesmo assim
+  return [...pool].sort((a,b) => a-b).slice(0, qtdNumeros);
+}
+
+function gerarEExibirDicas(loteriaId, qtdNumeros){
+  const config = LOTERIAS.find(l => l.id === loteriaId);
+  const freq = calcularFrequencias(config);
+  const combos = [];
+  const vistos = new Set();
+  let tentativas = 0;
+  while(combos.length < 5 && tentativas < 300){
+    const combo = sortearCombo(qtdNumeros, freq, config);
+    const chave = combo.join(',');
+    if(!vistos.has(chave)){ vistos.add(chave); combos.push(combo); }
+    tentativas++;
+  }
+
+  const el = document.getElementById('dica-resultado');
+  el.innerHTML = combos.map((combo, i) => `
+    <div class="combo-label">Combinação ${i+1}</div>
+    <div class="combo">${combo.map(n => `<div class="ball">${String(n).padStart(2,'0')}</div>`).join('')}</div>
+  `).join('');
+}
+
+// ---------- Início ----------
+montarGrade();
+carregarResultados();
+setInterval(carregarResultados, ATUALIZAR_A_CADA_MS);
+iniciarPaywall();
+
+// se voltou do Stripe (pago ou não), abre direto na aba Dicas
+{
+  const paramsIniciais = new URLSearchParams(window.location.search);
+  if(paramsIniciais.get('session_id')){
+    mostrarView('dicas');
+  }
+}
+</script>
+
+</body>
+</html>
