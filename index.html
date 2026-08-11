@@ -28,9 +28,21 @@
   }
   .logo{ font-family:Georgia, 'Times New Roman', serif; font-size:20px; color:var(--bg); }
   nav{ display:flex; gap:32px; }
+  @media (max-width:720px){
+    nav{
+      /* estado fechado, reforçado: some de verdade mesmo se o transform falhar por algum motivo */
+      visibility:hidden; pointer-events:none;
+    }
+    nav.open{ visibility:visible; pointer-events:auto; }
+  }
   nav a{ color:rgba(242,247,243,0.75); text-decoration:none; font-size:14px; cursor:pointer; }
   nav a:hover{ color:var(--bg); }
   nav a.active{ color:var(--bg); font-weight:600; }
+  @media (max-width:720px){
+    /* no menu mobile o fundo vira branco (var(--panel)), então o texto precisa ser escuro, não claro */
+    nav a{ color:var(--ink-soft); }
+    nav a:hover, nav a.active{ color:var(--ink); }
+  }
   .nav-toggle{ display:none; background:none; border:none; font-size:22px; color:var(--bg); cursor:pointer; }
 
   /* ---------- AVATAR / CONTA (cabeçalho) ---------- */
@@ -293,9 +305,11 @@
 
   @media (max-width:720px){
     nav{
-      position:fixed; inset:0 0 0 auto; width:70%; height:100vh;
+      position:fixed; top:0; right:0; bottom:0; left:auto;
+      width:70%; height:100vh; height:100dvh;
       background:var(--panel); flex-direction:column; padding:90px 28px; gap:24px;
       transform:translateX(100%); transition:transform .2s ease;
+      z-index:30; box-shadow:-8px 0 24px rgba(15,61,40,0.18);
     }
     nav.open{ transform:translateX(0); }
     .nav-toggle{ display:block; }
@@ -346,7 +360,7 @@
     <div class="page-head">
       <div class="eyebrow">Atualizado automaticamente</div>
       <h1>Resultados das loterias</h1>
-      <p>Acompanhe os últimos sorteios de hoje, ontem e da semana direto da
+      <p>Acompanhe os últimos sorteios de hoje, ontem e da semana — direto da
       fonte oficial da Caixa. Grátis, sempre.</p>
     </div>
 
@@ -378,7 +392,7 @@
   <!-- ===================== DICAS ===================== -->
   <section id="view-dicas" class="view" style="display:none">
     <div class="page-head">
-      <div class="eyebrow">Pagamento único · R$ 29,90</div>
+      <div class="eyebrow">Pagamento único · R$ 19,90</div>
       <h1>Gerador de dicas</h1>
       <p>Combinações de números geradas com base na frequência dos últimos
       sorteios. Escolha a loteria e peça sua dica.</p>
@@ -393,7 +407,7 @@
         <p>Desbloqueie o gerador de combinações baseado na frequência dos
         últimos sorteios.</p>
         <button id="btn-desbloquear">Desbloquear dicas</button>
-        <div class="preco">Pagamento único · R$ 29,90</div>
+        <div class="preco">Pagamento único · R$ 19,90</div>
         <div id="erro-pagamento">Não consegui confirmar o pagamento. Tente novamente.</div>
 
         <div id="conta-box">
