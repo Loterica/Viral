@@ -28,21 +28,9 @@
   }
   .logo{ font-family:Georgia, 'Times New Roman', serif; font-size:20px; color:var(--bg); }
   nav{ display:flex; gap:32px; }
-  @media (max-width:720px){
-    nav{
-      /* estado fechado, reforçado: some de verdade mesmo se o transform falhar por algum motivo */
-      visibility:hidden; pointer-events:none;
-    }
-    nav.open{ visibility:visible; pointer-events:auto; }
-  }
   nav a{ color:rgba(242,247,243,0.75); text-decoration:none; font-size:14px; cursor:pointer; }
   nav a:hover{ color:var(--bg); }
   nav a.active{ color:var(--bg); font-weight:600; }
-  @media (max-width:720px){
-    /* no menu mobile o fundo vira branco (var(--panel)), então o texto precisa ser escuro, não claro */
-    nav a{ color:var(--ink-soft); }
-    nav a:hover, nav a.active{ color:var(--ink); }
-  }
   .nav-toggle{ display:none; background:none; border:none; font-size:22px; color:var(--bg); cursor:pointer; }
 
   /* ---------- AVATAR / CONTA (cabeçalho) ---------- */
@@ -105,7 +93,7 @@
   .cta-btn.secondary{ background:transparent; color:var(--ink); border:1.5px solid var(--line); }
   .cta-btn.secondary:hover{ border-color:var(--accent); color:var(--accent); }
 
-  section.card.cta-dicas-card{
+  .cta-dicas-card{
     display:flex; align-items:center; gap:18px; flex-wrap:wrap;
     background:var(--ink); color:var(--bg);
   }
@@ -305,13 +293,13 @@
 
   @media (max-width:720px){
     nav{
-      position:fixed; top:0; right:0; bottom:0; left:auto;
-      width:70%; height:100vh; height:100dvh;
+      position:fixed; inset:0 0 0 auto; width:70%; height:100vh;
       background:var(--panel); flex-direction:column; padding:90px 28px; gap:24px;
       transform:translateX(100%); transition:transform .2s ease;
-      z-index:30; box-shadow:-8px 0 24px rgba(15,61,40,0.18);
+      opacity:0; pointer-events:none; z-index:50;
     }
-    nav.open{ transform:translateX(0); }
+    nav.open{ transform:translateX(0); opacity:1; pointer-events:auto; }
+    nav a{ color:var(--ink) !important; font-size:16px; }
     .nav-toggle{ display:block; }
   }
 </style>
@@ -407,7 +395,7 @@
         <p>Desbloqueie o gerador de combinações baseado na frequência dos
         últimos sorteios.</p>
         <button id="btn-desbloquear">Desbloquear dicas</button>
-        <div class="preco">Pagamento único · R$ 19,90</div>
+        <div class="preco">Pagamento único · <span id="preco-valor">R$ 19,90</span></div>
         <div id="erro-pagamento">Não consegui confirmar o pagamento. Tente novamente.</div>
 
         <div id="conta-box">
@@ -524,7 +512,7 @@ const MAX_SEQUENCIA_PERMITIDA = 2;
 
 const API_CRIAR_CHECKOUT = "https://xeaqteghrednlqqkglzd.supabase.co/functions/v1/loterias-criar-checkout";
 const API_VERIFICAR_PAGAMENTO = "https://xeaqteghrednlqqkglzd.supabase.co/functions/v1/loterias-verificar-pagamento";
-const ATUALIZAR_A_CADA_MS = 5 * 60 * 1000; // 5 minutos
+const HORA_ATUALIZACAO_DIARIA = { hora: 21, minuto: 30 }; // horário do sorteio diário
 
 // Dados do seu projeto Supabase (a chave "anon"/publicável é pública, pode ficar no HTML)
 const SUPABASE_URL = "https://xeaqteghrednlqqkglzd.supabase.co";
@@ -593,15 +581,13 @@ document.getElementById('btn-ir-para-dicas').addEventListener('click', () => {
 function montarSeletorLoteriaDicas(){
   const el = document.getElementById('dica-loteria-select');
   el.innerHTML = LOTERIAS.map(l =>
-    `<button data-id="${l.id}" class="${l.id === loteriaDicaAtiva ? 'active' : ''}">${l.nome}</button>`
+    `<button data-id="${l.id}" class="${l.id === loteriaDicaAtiva ? 'active' : ''}">${l.nome}${loteriasDesbloqueadas.has(l.id) ? ' ✓' : ''}</button>`
   ).join('');
   el.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
       loteriaDicaAtiva = btn.dataset.id;
       montarSeletorLoteriaDicas();
-      if(document.getElementById('paywall').style.display === 'none'){
-        montarSeletorDicas();
-      }
+      atualizarTelaDicas();
     });
   });
 }
@@ -637,6 +623,7 @@ function abrirDetalhe(id){
   loteriaAtiva = id;
   loteriaDicaAtiva = id;
   montarSeletorLoteriaDicas();
+  atualizarTelaDicas();
   const config = LOTERIAS.find(l => l.id === id);
   document.getElementById('home-grid').style.display = 'none';
   document.getElementById('detail-view').style.display = 'block';
@@ -644,9 +631,6 @@ function abrirDetalhe(id){
   monoEl.innerHTML = ICONE_TREVO;
   monoEl.style.background = config.cor;
   renderizarResultados();
-  if(document.getElementById('conteudo-dicas').style.display === 'block'){
-    montarSeletorDicas();
-  }
 }
 
 document.getElementById('btn-voltar').addEventListener('click', () => {
@@ -742,6 +726,21 @@ async function carregarResultados(){
     console.error(err);
     document.getElementById('atualizado-em').textContent =
       'Não consegui buscar os resultados agora. Tente recarregar a página.';
+  }
+}
+
+// dispara a atualização automaticamente todo dia às 21:30 (uma única vez por dia)
+let ultimaAtualizacaoAgendadaEm = null;
+function verificarHorarioAgendado(){
+  const agora = new Date();
+  const hojeStr = agora.toISOString().slice(0, 10);
+  const chegouNoHorario =
+    agora.getHours() === HORA_ATUALIZACAO_DIARIA.hora &&
+    agora.getMinutes() === HORA_ATUALIZACAO_DIARIA.minuto;
+
+  if(chegouNoHorario && ultimaAtualizacaoAgendadaEm !== hojeStr){
+    ultimaAtualizacaoAgendadaEm = hojeStr;
+    carregarResultados();
   }
 }
 
@@ -850,11 +849,9 @@ document.getElementById('nova-senha-form').addEventListener('submit', async (e) 
     window.history.replaceState({}, '', window.location.pathname);
     await verificarLogin();
     document.getElementById('nova-senha-box').style.display = 'none';
-    if(await jaEstaDesbloqueado()){
-      mostrarConteudoDicas();
-    }else{
-      document.getElementById('paywall').style.display = 'block';
-    }
+    await carregarLoteriasDesbloqueadas();
+    montarSeletorLoteriaDicas();
+    atualizarTelaDicas();
   }catch(err){
     console.error(err);
     statusEl.textContent = 'Erro ao salvar a nova senha. Tente novamente.';
@@ -872,7 +869,9 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const { error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
     if(error) throw error;
     await verificarLogin();
-    if(await jaEstaDesbloqueado()){
+    await carregarLoteriasDesbloqueadas();
+    montarSeletorLoteriaDicas();
+    if(loteriasDesbloqueadas.has(loteriaDicaAtiva)){
       mostrarConteudoDicas();
     }else{
       statusEl.textContent = 'Login ok! Agora é só clicar em "Desbloquear dicas".';
@@ -911,6 +910,8 @@ async function sair(){
 }
 
 // ---------- Paywall / desbloqueio (vinculado à conta) ----------
+let loteriasDesbloqueadas = new Set(); // loterias que a conta atual já desbloqueou
+
 function mostrarConteudoDicas(){
   document.getElementById('paywall').style.display = 'none';
   document.getElementById('criar-senha-box').style.display = 'none';
@@ -918,28 +919,51 @@ function mostrarConteudoDicas(){
   montarSeletorDicas();
 }
 
-async function jaEstaDesbloqueado(){
-  if(!usuarioAtual) return false;
+function mostrarPaywall(){
+  document.getElementById('conteudo-dicas').style.display = 'none';
+  document.getElementById('criar-senha-box').style.display = 'none';
+  document.getElementById('paywall').style.display = 'block';
+  atualizarPrecoExibido();
+}
+
+// atualiza o preço mostrado no botão de compra, conforme já tem alguma
+// loteria desbloqueada ou não (o preço real é sempre conferido de novo
+// no servidor, isso aqui é só pra mostrar pro usuário antes de clicar)
+function atualizarPrecoExibido(){
+  const precoEl = document.getElementById('preco-valor');
+  precoEl.textContent = loteriasDesbloqueadas.size > 0 ? 'R$ 9,90' : 'R$ 19,90';
+}
+
+async function carregarLoteriasDesbloqueadas(){
+  loteriasDesbloqueadas = new Set();
+  if(!usuarioAtual) return;
   const { data, error } = await supabaseClient
     .from('desbloqueios')
-    .select('user_id')
-    .eq('user_id', usuarioAtual.id)
-    .maybeSingle();
-  if(error){ console.error(error); return false; }
-  return !!data;
+    .select('loteria_id')
+    .eq('user_id', usuarioAtual.id);
+  if(error){ console.error(error); return; }
+  data.forEach(row => loteriasDesbloqueadas.add(row.loteria_id));
+}
+
+// decide se mostra o conteúdo ou o bloqueio, pra loteria selecionada agora
+function atualizarTelaDicas(){
+  if(loteriasDesbloqueadas.has(loteriaDicaAtiva)){
+    mostrarConteudoDicas();
+  }else{
+    mostrarPaywall();
+  }
 }
 
 async function iniciarPaywall(){
   await verificarLogin();
-
-  if(usuarioAtual && await jaEstaDesbloqueado()){
-    mostrarConteudoDicas();
-    return;
-  }
+  await carregarLoteriasDesbloqueadas();
 
   // voltou do Stripe agora, com pagamento feito?
   const params = new URLSearchParams(window.location.search);
   const sessionIdPago = params.get('session_id');
+  const loteriaDoPagamento = params.get('loteria');
+  if(loteriaDoPagamento) loteriaDicaAtiva = loteriaDoPagamento;
+
   if(sessionIdPago && params.get('pago') === '1'){
     if(usuarioAtual){
       // já tinha conta antes de comprar — não precisa criar senha de novo,
@@ -952,9 +976,12 @@ async function iniciarPaywall(){
       const dados = await resp.json();
       window.history.replaceState({}, '', window.location.pathname); // limpa a URL sempre, mesmo se falhar
       if(dados.pago){
-        mostrarConteudoDicas();
+        await carregarLoteriasDesbloqueadas();
+        montarSeletorLoteriaDicas();
+        atualizarTelaDicas();
       }else{
         document.getElementById('erro-pagamento').style.display = 'block';
+        atualizarTelaDicas();
       }
     }else{
       // não tinha conta — pede pra criar (registro pós-pagamento, fallback)
@@ -962,6 +989,9 @@ async function iniciarPaywall(){
       document.getElementById('criar-senha-box').style.display = 'block';
       document.getElementById('criar-senha-form').dataset.sessionId = sessionIdPago;
     }
+  }else{
+    montarSeletorLoteriaDicas();
+    atualizarTelaDicas();
   }
 }
 
@@ -999,6 +1029,8 @@ document.getElementById('criar-senha-form').addEventListener('submit', async (e)
     if(dados.pago){
       usuarioAtual = data.user;
       atualizarInterfaceLogin();
+      await carregarLoteriasDesbloqueadas();
+      montarSeletorLoteriaDicas();
       mostrarConteudoDicas();
       window.history.replaceState({}, '', window.location.pathname);
     }else{
@@ -1023,7 +1055,8 @@ document.getElementById('btn-desbloquear').addEventListener('click', async () =>
       body: JSON.stringify({
         successUrl: window.location.origin + window.location.pathname,
         cancelUrl: window.location.origin + window.location.pathname,
-        userId: usuarioAtual ? usuarioAtual.id : null
+        userId: usuarioAtual ? usuarioAtual.id : null,
+        loteriaId: loteriaDicaAtiva
       })
     });
     const dados = await resp.json();
@@ -1101,13 +1134,16 @@ function sortearCombo(qtdNumeros, freq, config){
   return [...pool].sort((a,b) => a-b).slice(0, qtdNumeros);
 }
 
+const QTD_COMBINACOES_GERADAS = 50; // quantos jogos possíveis gerar por vez
+
 function gerarEExibirDicas(loteriaId, qtdNumeros){
   const config = LOTERIAS.find(l => l.id === loteriaId);
   const freq = calcularFrequencias(config);
   const combos = [];
   const vistos = new Set();
   let tentativas = 0;
-  while(combos.length < 5 && tentativas < 300){
+  const maxTentativas = QTD_COMBINACOES_GERADAS * 60; // margem generosa pra achar combos únicos
+  while(combos.length < QTD_COMBINACOES_GERADAS && tentativas < maxTentativas){
     const combo = sortearCombo(qtdNumeros, freq, config);
     const chave = combo.join(',');
     if(!vistos.has(chave)){ vistos.add(chave); combos.push(combo); }
@@ -1124,7 +1160,7 @@ function gerarEExibirDicas(loteriaId, qtdNumeros){
 // ---------- Início ----------
 montarGrade();
 carregarResultados();
-setInterval(carregarResultados, ATUALIZAR_A_CADA_MS);
+setInterval(verificarHorarioAgendado, 60 * 1000); // confere a cada minuto se já é 21:30
 iniciarPaywall();
 
 // se voltou do Stripe (pago ou não), abre direto na aba Dicas
