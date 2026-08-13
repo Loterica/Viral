@@ -234,6 +234,88 @@
     margin-top:10px; line-height:1.6;
   }
 
+  /* ---------- AVISO PERMANENTE ---------- */
+  .aviso-permanente{
+    background:rgba(201,161,59,0.12);
+    border:1px solid rgba(201,161,59,0.4);
+    border-radius:8px;
+    padding:14px 16px;
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.6;
+    margin-bottom:24px;
+  }
+
+  /* ---------- GRÁFICO DE FREQUÊNCIA ---------- */
+  .grafico-freq-box{ margin-bottom:22px; }
+  .grafico-freq-box h4{ font-size:13px; font-weight:600; margin-bottom:10px; color:var(--ink-soft); }
+  .grafico-frequencia{ display:flex; align-items:flex-end; gap:2px; height:70px; overflow-x:auto; padding-bottom:4px; }
+  .barra-freq{ flex-shrink:0; width:16px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .barra-freq .barra{ width:10px; background:var(--accent); border-radius:2px 2px 0 0; min-height:2px; }
+  .barra-freq .numero{ font-size:8.5px; color:var(--ink-soft); margin-top:3px; }
+
+  /* ---------- NÚMEROS ATRASADOS ---------- */
+  .atrasados-box{ margin-bottom:22px; }
+  .atrasados-box h4{ font-size:13px; font-weight:600; margin-bottom:10px; color:var(--ink-soft); }
+  .atrasados-sub{ font-weight:400; font-size:11px; color:var(--ink-soft); opacity:0.8; }
+  .numeros-atrasados{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip-atrasado{
+    display:flex; align-items:center; gap:6px;
+    background:var(--bg); border:1px solid var(--line);
+    border-radius:16px; padding:5px 10px 5px 5px; font-size:12px;
+  }
+  .chip-atrasado .ball{ width:22px; height:22px; font-size:10px; }
+  .chip-atrasado .qtd{ color:var(--ink-soft); }
+
+  /* ---------- FILTROS (números fixos/excluídos) ---------- */
+  .filtros-dica{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:18px; }
+  .filtros-dica label{ flex:1; min-width:200px; font-size:12px; color:var(--ink-soft); }
+  .filtros-dica input{
+    display:block; width:100%; margin-top:5px;
+    border:1px solid var(--line); border-radius:6px;
+    padding:9px 11px; font-size:13px; color:var(--ink);
+  }
+
+  /* ---------- COMBO CARD (com botões salvar/copiar) ---------- */
+  .combo-card{ margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+  .combo-acoes{ display:flex; gap:10px; margin-top:8px; }
+  .combo-acoes button{
+    background:none; border:1px solid var(--line); color:var(--ink-soft);
+    font-size:11.5px; padding:5px 11px; border-radius:14px; cursor:pointer;
+  }
+  .combo-acoes button:hover{ border-color:var(--accent); color:var(--accent); }
+  .combo-acoes button.salvo{ background:var(--accent); border-color:var(--accent); color:#fff; }
+
+  /* ---------- FECHAMENTO / DESDOBRAMENTO ---------- */
+  .fechamento-box{ margin-top:26px; border-top:1px solid var(--line); padding-top:18px; }
+  .fechamento-box summary{ cursor:pointer; font-size:13.5px; font-weight:600; color:var(--ink); }
+  .fechamento-explicacao{ font-size:12.5px; color:var(--ink-soft); line-height:1.6; margin:12px 0; }
+  .fechamento-box textarea{
+    display:block; width:100%; margin-top:5px;
+    border:1px solid var(--line); border-radius:6px;
+    padding:9px 11px; font-size:13px; color:var(--ink); font-family:inherit;
+    resize:vertical;
+  }
+  .fechamento-box label{ font-size:12px; color:var(--ink-soft); display:block; margin-bottom:12px; }
+  .fechamento-custo{ font-size:13px; color:var(--accent-gold); margin:10px 0; font-weight:600; }
+  #fechamento-resultado{ max-height:400px; overflow-y:auto; }
+
+  /* ---------- MEUS JOGOS ---------- */
+  .jogo-salvo-card{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    padding:14px 0; border-bottom:1px solid var(--line);
+  }
+  .jogo-salvo-card:last-child{ border-bottom:none; }
+  .jogo-salvo-meta{ min-width:110px; font-size:12px; color:var(--ink-soft); }
+  .jogo-salvo-balls{ display:flex; flex-wrap:wrap; gap:5px; flex:1; }
+  .jogo-salvo-acertos{ font-size:12px; font-weight:600; white-space:nowrap; }
+  .jogo-salvo-acertos.bom{ color:var(--accent); }
+  .btn-apagar-jogo{
+    background:none; border:none; color:var(--ink-soft);
+    cursor:pointer; font-size:16px; padding:4px 8px;
+  }
+  .btn-apagar-jogo:hover{ color:#a4453a; }
+
   /* ---------- LOGIN / CRIAR SENHA ---------- */
   #login-box{
     background:var(--bg);
@@ -319,6 +401,7 @@
     <div class="conta-dropdown" id="conta-dropdown">
       <div class="conta-dropdown-email" id="conta-dropdown-email"></div>
       <button class="conta-dropdown-item" id="btn-perfil">Perfil</button>
+      <button class="conta-dropdown-item" id="btn-meus-jogos">Meus jogos</button>
       <button class="conta-dropdown-item" id="btn-sair-global">Sair</button>
     </div>
   </div>
@@ -384,6 +467,13 @@
       <h1>Gerador de dicas</h1>
       <p>Combinações de números geradas com base na frequência dos últimos
       sorteios. Escolha a loteria e peça sua dica.</p>
+    </div>
+
+    <div class="aviso-permanente">
+      ⚠️ Sorteios de loteria são <strong>100% aleatórios</strong>. Nenhuma
+      ferramenta — essa ou qualquer outra — consegue prever ou aumentar suas
+      chances reais de acerto. O que está aqui é só uma forma de organizar
+      seus números. Jogue com responsabilidade.
     </div>
 
     <section class="card">
@@ -465,8 +555,45 @@
       </div>
 
       <div id="conteudo-dicas">
+
+        <div class="grafico-freq-box">
+          <h4 id="grafico-freq-titulo">Frequência dos números</h4>
+          <div id="grafico-frequencia" class="grafico-frequencia"></div>
+        </div>
+
+        <div class="atrasados-box">
+          <h4>Números atrasados <span class="atrasados-sub">(há mais tempo sem sair — informativo, não é previsão)</span></h4>
+          <div id="numeros-atrasados" class="numeros-atrasados"></div>
+        </div>
+
+        <div class="filtros-dica">
+          <label>Números que você quer manter sempre (opcional)
+            <input type="text" id="numeros-fixos" placeholder="ex: 5, 12, 23">
+          </label>
+          <label>Números que você nunca quer jogar (opcional)
+            <input type="text" id="numeros-excluidos" placeholder="ex: 1, 13, 44">
+          </label>
+        </div>
+
         <div class="qtd-select" id="dica-qtd-select"></div>
         <div id="dica-resultado"></div>
+
+        <details class="fechamento-box">
+          <summary>Fazer um fechamento (desdobramento) em vez de dicas prontas</summary>
+          <p class="fechamento-explicacao">
+            Escolha mais números do que o mínimo da aposta — o sistema gera
+            <strong>todas as combinações possíveis</strong> dentro desses números.
+            É uma técnica estatística real (não uma "previsão"): garante que,
+            se um certo número desses números sair, pelo menos uma das suas
+            combinações vai contemplar isso.
+          </p>
+          <label>Digite seus números (separados por vírgula)
+            <textarea id="fechamento-numeros" rows="2" placeholder="ex: 2, 5, 7, 9, 11, 14, 16, 18, 20, 22"></textarea>
+          </label>
+          <button id="btn-gerar-fechamento" class="cta-btn secondary">Gerar fechamento</button>
+          <div id="fechamento-custo" class="fechamento-custo"></div>
+          <div id="fechamento-resultado"></div>
+        </details>
       </div>
     </section>
 
@@ -476,6 +603,25 @@
       aumenta as chances reais de acerto nem garante nenhum resultado. Jogue
       com responsabilidade.
     </p>
+  </section>
+
+  <!-- ===================== MEUS JOGOS ===================== -->
+  <section id="view-meusjogos" class="view" style="display:none">
+    <div class="page-head">
+      <div class="eyebrow">Sua conta</div>
+      <h1>Meus jogos</h1>
+      <p>Combinações que você salvou. Depois que o sorteio sair, confira
+      quantos números você acertou em cada uma.</p>
+    </div>
+    <section class="card">
+      <div id="meus-jogos-vazio" style="display:none">
+        <p style="font-size:13.5px;color:var(--ink-soft);">
+          Você ainda não salvou nenhum jogo. Vá em "Dicas", gere combinações
+          e clique em "Salvar" na que quiser guardar.
+        </p>
+      </div>
+      <div id="meus-jogos-lista"></div>
+    </section>
   </section>
 
   <!-- ===================== CONTATO ===================== -->
@@ -502,7 +648,7 @@
 // Resultados vêm direto dessa API pública (sem passar pelo Supabase):
 // https://github.com/guto-alves/loterias-api
 const API_BASE = "https://loteriascaixa-api.herokuapp.com/api";
-const QTD_HISTORICO = 5; // quantos concursos anteriores buscar por loteria
+const QTD_HISTORICO = 20; // quantos concursos anteriores buscar por loteria (mais = análise mais ampla)
 
 // Quantos números SEGUIDOS (ex: 95, 96, 97) podem aparecer numa mesma dica.
 // 2 = permite pares seguidos (ex: 95 e 96), mas nunca 3 em sequência.
@@ -1070,18 +1216,117 @@ document.getElementById('btn-desbloquear').addEventListener('click', async () =>
   }
 });
 
+// ---------- Preços oficiais (Caixa, 2026) e cálculo de custo ---------
+// valores de referência — a Caixa pode reajustar, confira sempre no app oficial
+const PRECOS_LOTERIAS = {
+  megasena:   { minApostas: 6,  precoBase: 6.00 },
+  lotofacil:  { minApostas: 15, precoBase: 3.50 },
+  quina:      { minApostas: 5,  precoBase: 3.00 },
+  lotomania:  { minApostas: 50, precoBase: 3.00 }, // aposta fixa, não varia
+  duplasena:  { minApostas: 6,  precoBase: 3.00 },
+  diadesorte: { minApostas: 7,  precoBase: 2.50 },
+  timemania:  { minApostas: 10, precoBase: 3.50 },
+};
+
+function combinacao(n, k){
+  if(k < 0 || k > n) return 0;
+  k = Math.min(k, n - k);
+  let resultado = 1;
+  for(let i = 0; i < k; i++) resultado = resultado * (n - i) / (i + 1);
+  return Math.round(resultado);
+}
+
+function calcularCusto(loteriaId, qtdNumeros){
+  const p = PRECOS_LOTERIAS[loteriaId];
+  if(!p) return null;
+  const totalCombos = combinacao(qtdNumeros, p.minApostas);
+  return totalCombos * p.precoBase;
+}
+
+function formatarReais(valor){
+  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+// ---------- Gráfico de frequência ----------
+function renderizarGraficoFrequencia(loteriaId){
+  const config = LOTERIAS.find(l => l.id === loteriaId);
+  const freq = calcularFrequencias(config);
+  document.getElementById('grafico-freq-titulo').textContent =
+    `Frequência dos números (últimos ${QTD_HISTORICO} sorteios)`;
+
+  const valores = [];
+  for(let n = config.min; n <= config.max; n++) valores.push(freq[n]);
+  const maxValor = Math.max(...valores, 1);
+
+  const el = document.getElementById('grafico-frequencia');
+  el.innerHTML = '';
+  for(let n = config.min; n <= config.max; n++){
+    const alturaPct = Math.max(6, (freq[n] / maxValor) * 100);
+    const barra = document.createElement('div');
+    barra.className = 'barra-freq';
+    barra.title = `Número ${n}: saiu ${freq[n] - 1}x`;
+    barra.innerHTML = `<div class="barra" style="height:${alturaPct}%"></div><div class="numero">${n}</div>`;
+    el.appendChild(barra);
+  }
+
+  renderizarNumerosAtrasados(loteriaId, config);
+}
+
+// calcula, pra cada número, há quantos sorteios ele não sai (0 = saiu no
+// último sorteio). É só uma contagem histórica real — não prevê nada.
+function calcularAtrasos(config){
+  const info = dadosLoterias[config.id];
+  const resultados = (info && info.resultados) || [];
+  const atrasos = {};
+
+  for(let n = config.min; n <= config.max; n++){
+    let atraso = resultados.length; // não apareceu em nenhum dos sorteios buscados
+    for(let i = 0; i < resultados.length; i++){
+      if(resultados[i].dezenas.includes(n)){ atraso = i; break; }
+    }
+    atrasos[n] = atraso;
+  }
+  return atrasos;
+}
+
+function renderizarNumerosAtrasados(loteriaId, config){
+  const atrasos = calcularAtrasos(config);
+  const totalBuscado = (dadosLoterias[loteriaId]?.resultados || []).length;
+
+  const listaOrdenada = [];
+  for(let n = config.min; n <= config.max; n++) listaOrdenada.push({ numero: n, atraso: atrasos[n] });
+  listaOrdenada.sort((a, b) => b.atraso - a.atraso);
+
+  const top = listaOrdenada.slice(0, 12);
+  const el = document.getElementById('numeros-atrasados');
+  el.innerHTML = top.map(item => {
+    const texto = item.atraso >= totalBuscado
+      ? `${totalBuscado}+ sorteios`
+      : `${item.atraso} sorteio${item.atraso === 1 ? '' : 's'}`;
+    return `
+      <div class="chip-atrasado">
+        <div class="ball">${String(item.numero).padStart(2,'0')}</div>
+        <span class="qtd">há ${texto}</span>
+      </div>
+    `;
+  }).join('');
+}
+
 // ---------- Gerador de dicas ----------
 function montarSeletorDicas(){
   const config = LOTERIAS.find(l => l.id === loteriaDicaAtiva);
   const qtdSelEl = document.getElementById('dica-qtd-select');
-  qtdSelEl.innerHTML = config.dicas.map(n =>
-    `<button data-n="${n}">Dica de ${n} números</button>`
-  ).join('');
+  qtdSelEl.innerHTML = config.dicas.map(n => {
+    const custo = calcularCusto(loteriaDicaAtiva, n);
+    const custoTxt = custo !== null ? ` · ${formatarReais(custo)}/jogo` : '';
+    return `<button data-n="${n}">Dica de ${n} números${custoTxt}</button>`;
+  }).join('');
   qtdSelEl.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => gerarEExibirDicas(loteriaDicaAtiva, Number(btn.dataset.n)));
   });
 
   document.getElementById('dica-resultado').innerHTML = '';
+  renderizarGraficoFrequencia(loteriaDicaAtiva);
 }
 
 function calcularFrequencias(config){
@@ -1109,52 +1354,273 @@ function temSequenciaLonga(numerosOrdenados){
   return false;
 }
 
-function sortearCombo(qtdNumeros, freq, config){
+// lê um campo tipo "5, 12, 23" e devolve só os números válidos pra essa loteria
+function lerNumerosDoCampo(valor, config){
+  return [...new Set(
+    valor.split(',')
+      .map(s => parseInt(s.trim(), 10))
+      .filter(n => !isNaN(n) && n >= config.min && n <= config.max)
+  )];
+}
+
+function sortearCombo(qtdNumeros, freq, config, numerosFixos = [], numerosExcluidos = []){
+  const excluidosSet = new Set(numerosExcluidos);
   const pool = [];
   for(let n = config.min; n <= config.max; n++){
+    if(excluidosSet.has(n)) continue;
     for(let i = 0; i < freq[n]; i++) pool.push(n);
   }
+  const fixosValidos = numerosFixos.filter(n => !excluidosSet.has(n)).slice(0, qtdNumeros);
 
   let tentativasCombo = 0;
   while(tentativasCombo < 300){
-    const escolhidos = new Set();
+    const escolhidos = new Set(fixosValidos);
     let tentativas = 0;
-    while(escolhidos.size < qtdNumeros && tentativas < 8000){
+    while(escolhidos.size < qtdNumeros && tentativas < 8000 && pool.length > 0){
       const pick = pool[Math.floor(Math.random() * pool.length)];
       escolhidos.add(pick);
       tentativas++;
     }
     const combo = [...escolhidos].sort((a,b) => a-b);
+    if(combo.length < qtdNumeros) return combo; // não sobrou número suficiente (filtros restritivos demais)
     if(!temSequenciaLonga(combo)) return combo;
     tentativasCombo++;
   }
-  // se não achou nenhuma combinação "espalhada" em 300 tentativas
-  // (raro, geralmente só em loterias com poucos números disponíveis),
-  // devolve a última mesmo assim
-  return [...pool].sort((a,b) => a-b).slice(0, qtdNumeros);
+  return [...new Set([...fixosValidos, ...pool])].sort((a,b) => a-b).slice(0, qtdNumeros);
 }
 
 const QTD_COMBINACOES_GERADAS = 50; // quantos jogos possíveis gerar por vez
+const MARGEM_DIVERSIDADE = 3; // quanto maior, mais parecidas as combinações podem ser entre si
+const LIMITE_COMBOS_FECHAMENTO = 3000; // trava de segurança pra não travar o navegador
+
+function contarNumerosEmComum(comboA, comboB){
+  const setB = new Set(comboB);
+  return comboA.filter(n => setB.has(n)).length;
+}
+
+// gera o HTML de uma combinação, com botões de salvar/copiar
+function htmlComboCard(loteriaId, numeros, label){
+  const numerosStr = numeros.map(n => String(n).padStart(2,'0')).join(',');
+  return `
+    <div class="combo-card">
+      <div class="combo-label">${label}</div>
+      <div class="combo">${numeros.map(n => `<div class="ball">${String(n).padStart(2,'0')}</div>`).join('')}</div>
+      <div class="combo-acoes">
+        <button class="btn-salvar-jogo" data-loteria="${loteriaId}" data-numeros="${numerosStr}">💾 Salvar</button>
+        <button class="btn-copiar-jogo" data-numeros="${numerosStr}">📋 Copiar</button>
+      </div>
+    </div>
+  `;
+}
 
 function gerarEExibirDicas(loteriaId, qtdNumeros){
   const config = LOTERIAS.find(l => l.id === loteriaId);
   const freq = calcularFrequencias(config);
+
+  const numerosFixos = lerNumerosDoCampo(document.getElementById('numeros-fixos').value, config);
+  const numerosExcluidos = lerNumerosDoCampo(document.getElementById('numeros-excluidos').value, config);
+
+  if(numerosFixos.length > qtdNumeros){
+    document.getElementById('dica-resultado').innerHTML =
+      `<p style="color:#a4453a;font-size:13px;">Você marcou mais números fixos (${numerosFixos.length}) do que o tamanho da dica (${qtdNumeros}). Tire alguns ou peça uma dica maior.</p>`;
+    return;
+  }
+
+  const tamanhoIntervalo = config.max - config.min + 1 - numerosExcluidos.length;
+  const sobreposicaoMinima = Math.max(0, 2 * qtdNumeros - tamanhoIntervalo);
+  const sobreposicaoMaximaPermitida = Math.min(qtdNumeros, sobreposicaoMinima + MARGEM_DIVERSIDADE);
+
   const combos = [];
   const vistos = new Set();
   let tentativas = 0;
-  const maxTentativas = QTD_COMBINACOES_GERADAS * 60; // margem generosa pra achar combos únicos
+  const maxTentativas = QTD_COMBINACOES_GERADAS * 150;
+
   while(combos.length < QTD_COMBINACOES_GERADAS && tentativas < maxTentativas){
-    const combo = sortearCombo(qtdNumeros, freq, config);
+    const combo = sortearCombo(qtdNumeros, freq, config, numerosFixos, numerosExcluidos);
     const chave = combo.join(',');
-    if(!vistos.has(chave)){ vistos.add(chave); combos.push(combo); }
     tentativas++;
+    if(vistos.has(chave)) continue;
+    const pareceDemais = combos.some(existente => contarNumerosEmComum(combo, existente) > sobreposicaoMaximaPermitida);
+    if(pareceDemais) continue;
+    vistos.add(chave);
+    combos.push(combo);
   }
 
   const el = document.getElementById('dica-resultado');
-  el.innerHTML = combos.map((combo, i) => `
-    <div class="combo-label">Combinação ${i+1}</div>
-    <div class="combo">${combo.map(n => `<div class="ball">${String(n).padStart(2,'0')}</div>`).join('')}</div>
-  `).join('');
+  el.innerHTML = combos.map((combo, i) => htmlComboCard(loteriaId, combo, `Combinação ${i+1}`)).join('');
+
+  if(combos.length < QTD_COMBINACOES_GERADAS){
+    const aviso = document.createElement('div');
+    aviso.style.cssText = 'font-size:12px;color:var(--ink-soft);margin-top:14px;';
+    aviso.textContent = `Consegui gerar ${combos.length} combinações bem diferentes entre si — pra essa loteria (ou com esses filtros), gerar mais do que isso significaria repetir demais os mesmos números.`;
+    el.appendChild(aviso);
+  }
+}
+
+// ---------- Fechamento / desdobramento ----------
+function gerarTodasCombinacoes(numeros, tamanho, limite){
+  const resultado = [];
+  function combinar(inicio, atual){
+    if(resultado.length >= limite) return;
+    if(atual.length === tamanho){ resultado.push([...atual]); return; }
+    for(let i = inicio; i < numeros.length; i++){
+      if(resultado.length >= limite) return;
+      atual.push(numeros[i]);
+      combinar(i + 1, atual);
+      atual.pop();
+    }
+  }
+  combinar(0, []);
+  return resultado;
+}
+
+document.getElementById('btn-gerar-fechamento').addEventListener('click', () => {
+  const config = LOTERIAS.find(l => l.id === loteriaDicaAtiva);
+  const precoInfo = PRECOS_LOTERIAS[loteriaDicaAtiva];
+  const custoEl = document.getElementById('fechamento-custo');
+  const resultadoEl = document.getElementById('fechamento-resultado');
+
+  const numeros = lerNumerosDoCampo(document.getElementById('fechamento-numeros').value, config)
+    .sort((a,b) => a-b);
+
+  if(!precoInfo){
+    custoEl.textContent = 'Fechamento não disponível pra essa loteria.';
+    resultadoEl.innerHTML = '';
+    return;
+  }
+  if(numeros.length <= precoInfo.minApostas){
+    custoEl.textContent = `Digite mais números do que o mínimo da aposta (${precoInfo.minApostas}) pra gerar um fechamento.`;
+    resultadoEl.innerHTML = '';
+    return;
+  }
+
+  const totalPossivel = combinacao(numeros.length, precoInfo.minApostas);
+  if(totalPossivel > LIMITE_COMBOS_FECHAMENTO){
+    custoEl.textContent =
+      `Isso geraria ${totalPossivel.toLocaleString('pt-BR')} combinações — passa do limite de ${LIMITE_COMBOS_FECHAMENTO} que o navegador aguenta mostrar de uma vez. Tente com menos números.`;
+    resultadoEl.innerHTML = '';
+    return;
+  }
+
+  const combos = gerarTodasCombinacoes(numeros, precoInfo.minApostas, LIMITE_COMBOS_FECHAMENTO);
+  const custoTotal = combos.length * precoInfo.precoBase;
+
+  custoEl.innerHTML =
+    `${combos.length} combinações · custo total pra jogar todas: <strong>${formatarReais(custoTotal)}</strong>`;
+  resultadoEl.innerHTML = combos.map((combo, i) => htmlComboCard(loteriaDicaAtiva, combo, `Fechamento ${i+1}`)).join('');
+});
+
+// ---------- Salvar / copiar jogos (delegação de eventos) ----------
+async function salvarJogo(loteriaId, numeros, botao){
+  if(!usuarioAtual) return;
+  botao.disabled = true;
+  botao.textContent = 'Salvando...';
+  try{
+    const { error } = await supabaseClient.from('jogos_salvos').insert({
+      user_id: usuarioAtual.id,
+      loteria_id: loteriaId,
+      numeros: numeros,
+    });
+    if(error) throw error;
+    botao.textContent = '✓ Salvo';
+    botao.classList.add('salvo');
+  }catch(err){
+    console.error(err);
+    botao.textContent = 'Erro ao salvar';
+    botao.disabled = false;
+  }
+}
+
+function copiarJogo(numerosStr, botao){
+  const texto = numerosStr.split(',').join(' - ');
+  navigator.clipboard.writeText(texto).then(() => {
+    const original = botao.textContent;
+    botao.textContent = '✓ Copiado';
+    setTimeout(() => { botao.textContent = original; }, 1500);
+  });
+}
+
+document.addEventListener('click', (e) => {
+  const btnSalvar = e.target.closest('.btn-salvar-jogo');
+  if(btnSalvar){
+    const numeros = btnSalvar.dataset.numeros.split(',').map(Number);
+    salvarJogo(btnSalvar.dataset.loteria, numeros, btnSalvar);
+    return;
+  }
+  const btnCopiar = e.target.closest('.btn-copiar-jogo');
+  if(btnCopiar){
+    copiarJogo(btnCopiar.dataset.numeros, btnCopiar);
+    return;
+  }
+  const btnApagar = e.target.closest('.btn-apagar-jogo');
+  if(btnApagar){
+    apagarJogo(btnApagar.dataset.id);
+    return;
+  }
+});
+
+// ---------- Meus jogos ----------
+document.getElementById('btn-meus-jogos').addEventListener('click', () => {
+  document.getElementById('conta-dropdown').classList.remove('open');
+  mostrarView('meusjogos');
+  carregarEExibirMeusJogos();
+});
+
+async function carregarEExibirMeusJogos(){
+  const listaEl = document.getElementById('meus-jogos-lista');
+  const vazioEl = document.getElementById('meus-jogos-vazio');
+  if(!usuarioAtual){
+    listaEl.innerHTML = '';
+    vazioEl.style.display = 'block';
+    vazioEl.querySelector('p').textContent = 'Entre na sua conta (na aba Dicas) pra ver seus jogos salvos.';
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from('jogos_salvos')
+    .select('id, loteria_id, numeros, criado_em')
+    .eq('user_id', usuarioAtual.id)
+    .order('criado_em', { ascending: false });
+
+  if(error){ console.error(error); return; }
+
+  if(!data || data.length === 0){
+    listaEl.innerHTML = '';
+    vazioEl.style.display = 'block';
+    return;
+  }
+  vazioEl.style.display = 'none';
+
+  listaEl.innerHTML = data.map(jogo => {
+    const config = LOTERIAS.find(l => l.id === jogo.loteria_id);
+    const ultimoResultado = dadosLoterias[jogo.loteria_id]?.resultados?.[0];
+    let acertosHtml = '<span class="jogo-salvo-acertos">Aguardando próximo sorteio</span>';
+    if(ultimoResultado){
+      const dezenasResultado = new Set(ultimoResultado.dezenas);
+      const acertos = jogo.numeros.filter(n => dezenasResultado.has(n)).length;
+      const classeBom = acertos >= Math.ceil(jogo.numeros.length * 0.6) ? 'bom' : '';
+      acertosHtml = `<span class="jogo-salvo-acertos ${classeBom}">${acertos} acertos (concurso ${ultimoResultado.concurso})</span>`;
+    }
+    return `
+      <div class="jogo-salvo-card">
+        <div class="jogo-salvo-meta">
+          <strong>${config ? config.nome : jogo.loteria_id}</strong><br>
+          ${new Date(jogo.criado_em).toLocaleDateString('pt-BR')}
+        </div>
+        <div class="jogo-salvo-balls">
+          ${jogo.numeros.map(n => `<div class="ball">${String(n).padStart(2,'0')}</div>`).join('')}
+        </div>
+        ${acertosHtml}
+        <button class="btn-apagar-jogo" data-id="${jogo.id}" title="Apagar">✕</button>
+      </div>
+    `;
+  }).join('');
+}
+
+async function apagarJogo(id){
+  const { error } = await supabaseClient.from('jogos_salvos').delete().eq('id', id);
+  if(error){ console.error(error); return; }
+  carregarEExibirMeusJogos();
 }
 
 // ---------- Início ----------
