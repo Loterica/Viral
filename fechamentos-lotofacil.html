@@ -1,0 +1,2469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Fechamentos Lotofácil — seis ferramentas para montar e conferir jogos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F2F2F4;
+    --bg-2:#E8E8EB;
+    --surface:#FFFFFF;
+    --surface-2:#F5F5F7;
+    --ink:#1B1C20;
+    --ink-soft:#63656E;
+    --ink-faint:#9799A3;
+    --border:#DEDFE3;
+    --border-soft:#EAEAED;
+    --accent:#33415C;
+    --accent-deep:#1F2A3D;
+    --accent-soft:#DDE2EA;
+    --mark:#9C4B32;
+    --mark-soft:#F1E1DB;
+    --hot:#C0532B;
+    --cold:#33628C;
+    --radius:10px;
+    --shadow:0 6px 20px rgba(20,21,26,.08);
+    --overlay-bg:rgba(255,255,255,.9);
+  }
+  body.dark-theme{
+    --bg:#17181C;
+    --bg-2:#1F2024;
+    --surface:#1E1F24;
+    --surface-2:#26272D;
+    --ink:#ECEDF0;
+    --ink-soft:#A6A8B2;
+    --ink-faint:#6E7078;
+    --border:#34353C;
+    --border-soft:#2A2B31;
+    --accent:#8AA6E8;
+    --accent-deep:#4A6FA8;
+    --accent-soft:#28344A;
+    --mark:#D6896B;
+    --mark-soft:#3A2A22;
+    --shadow:0 10px 30px rgba(0,0,0,.5);
+    --overlay-bg:rgba(24,25,29,.92);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', system-ui, sans-serif;
+    line-height:1.5;
+    transition:background .2s ease, color .2s ease;
+  }
+  h1,h2,h3{font-family:'Inter', system-ui, sans-serif; margin:0; color:var(--ink); font-weight:700; letter-spacing:-.01em;}
+  .mono{font-family:'IBM Plex Mono', ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+  a{color:var(--accent);}
+
+  .perf{height:1px; background:var(--border);}
+
+  /* ---------- header por ferramenta ---------- */
+  .app-header{
+    background:var(--accent-deep);
+    transition:background .2s ease;
+    padding:18px 18px 0;
+  }
+  .header-top{
+    max-width:980px; margin:0 auto;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:14px;
+    padding-bottom:16px;
+  }
+  .header-title{font-family:'Inter', system-ui, sans-serif; font-weight:700; font-size:21px; color:#fff; line-height:1.2; letter-spacing:-.01em;}
+  .header-sub{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.62); margin-top:4px; font-family:'IBM Plex Mono';}
+  .hamburger{
+    flex:none; width:44px; height:38px; border-radius:8px;
+    border:1px solid rgba(255,255,255,.3); background:transparent;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
+    cursor:pointer;
+  }
+  .hamburger span{display:block; width:18px; height:1.5px; background:#fff; border-radius:2px;}
+  .header-actions{display:flex; align-items:center; gap:8px; flex:none;}
+  .theme-toggle{
+    flex:none; width:44px; height:38px; border-radius:8px;
+    border:1px solid rgba(255,255,255,.3); background:transparent;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:17px; line-height:1;
+  }
+
+  .app-menu{
+    max-width:980px; margin:0 auto;
+    max-height:0; overflow:hidden;
+    transition:max-height .25s ease;
+  }
+  .app-menu.open{max-height:900px; padding-bottom:16px;}
+  .menu-item{
+    display:block; padding:13px 4px; font-size:15px; font-family:'Inter';
+    color:rgba(255,255,255,.68); text-decoration:none; cursor:pointer;
+    border-bottom:1px solid rgba(255,255,255,.12);
+  }
+  .menu-item.current{color:#fff; font-weight:600;}
+  .dropdown-toggle{position:relative;}
+  .dropdown-toggle .chev{font-size:11px; margin-left:2px;}
+  .dropdown-panel{
+    display:none;
+    background:var(--surface); border-radius:8px; margin:8px 0 14px;
+    box-shadow:0 8px 24px rgba(20,21,26,.22); overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .dropdown-panel.open{display:block;}
+  .dropdown-panel button, .dropdown-panel .acc-name{
+    display:block; width:100%; text-align:left; background:var(--surface); border:none;
+    padding:13px 16px; font-family:'Inter'; font-size:14.5px; color:var(--ink);
+    cursor:pointer; border-bottom:1px solid var(--border-soft);
+  }
+  .dropdown-panel button:last-child{border-bottom:none;}
+  .dropdown-panel button.current{background:var(--accent-deep); color:#fff;}
+  .acc-name{color:var(--ink-faint); font-size:12.5px; cursor:default;}
+
+  .draw-strip{background:var(--surface-2); border-bottom:1px solid var(--border);}
+  .draw-strip-inner{
+    max-width:980px; margin:0 auto; padding:10px 20px;
+    display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  }
+  .draw-strip .draw-label{font-family:'IBM Plex Mono'; font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft);}
+  .draw-strip strong{font-family:'IBM Plex Mono'; font-size:14px; color:var(--ink);}
+  .draw-strip .draw-date{font-size:12px; color:var(--ink-soft);}
+  .draw-strip .balls{display:flex; flex-wrap:wrap; gap:4px; width:100%; margin-top:2px;}
+  .draw-strip .ball{width:22px;height:22px;font-size:10px;}
+
+  @media (max-width:640px){
+    .header-title{font-size:18px;}
+  }
+
+  main{max-width:980px; margin:0 auto; padding:0 20px 60px;}
+  section.panel{
+    display:none;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:0 0 var(--radius) var(--radius);
+    padding:26px 22px 30px;
+    box-shadow:var(--shadow);
+  }
+  section.panel.active{display:block;}
+
+  .eyebrow{font-family:'IBM Plex Mono'; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px;}
+  section.panel h2{font-size:22px; margin-bottom:6px;}
+  .desc{color:var(--ink-soft); font-size:14.5px; max-width:60ch; margin-bottom:18px;}
+
+  .picker{
+    display:grid; grid-template-columns:repeat(5,1fr); gap:8px; max-width:340px; margin-bottom:16px;
+  }
+  .picker.wide{grid-template-columns:repeat(6,1fr); max-width:420px;}
+  .num-btn{
+    aspect-ratio:1; border-radius:50%; border:1px solid var(--border);
+    background:var(--surface); color:var(--ink); font-family:'IBM Plex Mono'; font-weight:600; font-size:14px;
+    cursor:pointer; transition:transform .12s ease, background .12s ease, color .12s ease, border-color .12s ease;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .num-btn:hover{transform:translateY(-1px); border-color:var(--accent);}
+  .num-btn.sel{background:var(--accent-deep); color:#fff; border-color:var(--accent-deep);}
+  .num-btn.locked{opacity:.3; pointer-events:none;}
+  .num-btn[disabled]{opacity:.3; cursor:not-allowed;}
+
+  .status-line{font-family:'IBM Plex Mono'; font-size:13px; color:var(--ink-soft); margin-bottom:14px;}
+  .status-line b{color:var(--ink);}
+
+  .result-box{border-top:1px solid var(--border); padding-top:18px; margin-top:6px;}
+  .result-box.empty{color:var(--ink-faint); font-size:14px;}
+
+  table.sim{border-collapse:collapse; width:100%; max-width:520px; font-family:'IBM Plex Mono'; font-size:13px; margin:12px 0 16px;}
+  table.sim th, table.sim td{border:1px solid var(--border-soft); padding:6px 10px; text-align:center;}
+  table.sim th{background:var(--surface-2); color:var(--ink); font-weight:600;}
+  table.sim td.pts{font-weight:700; color:var(--mark);}
+
+  .sample-wrap{max-height:220px; overflow:auto; border:1px solid var(--border-soft); border-radius:8px; padding:10px; background:var(--surface);}
+  .sample-row{font-family:'IBM Plex Mono'; font-size:12.5px; padding:3px 0; border-bottom:1px solid var(--border-soft); color:var(--ink-soft);}
+  .sample-row:last-child{border-bottom:none;}
+  .sample-row span.n{display:inline-block; width:22px;}
+  .sample-row span.n.diff{color:var(--mark); font-weight:700;}
+  .sample-score{
+    display:inline-block; margin-left:10px; font-size:11px; color:var(--ink-faint);
+    font-family:'IBM Plex Mono';
+  }
+  .sample-share{
+    float:right; background:transparent; border:none; cursor:pointer;
+    font-size:14px; padding:0 4px; line-height:1.6; opacity:.7;
+  }
+  .sample-share:hover{opacity:1;}
+  .export-actions{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0 12px;}
+  .export-actions .btn{width:auto; font-size:13px; padding:9px 14px;}
+  .note{font-size:12.5px; color:var(--ink-faint); margin-top:10px;}
+
+  .btn{
+    font-family:'Inter'; font-weight:600; font-size:14px;
+    background:var(--accent-deep); color:#fff; border:none; border-radius:8px;
+    padding:11px 18px; cursor:pointer;
+  }
+  .btn:disabled{background:var(--border); color:var(--ink-faint); cursor:not-allowed;}
+  .btn.ghost{background:transparent; color:var(--accent-deep); border:1px solid var(--border);}
+
+  .step{display:none;}
+  .step.active{display:block;}
+  .step-tag{display:inline-block; font-family:'IBM Plex Mono'; font-size:11px; background:var(--surface-2); color:var(--ink-soft); border:1px solid var(--border-soft); border-radius:20px; padding:3px 10px; margin-bottom:10px;}
+
+  .qtd-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+  .qtd-row button{
+    font-family:'IBM Plex Mono'; font-weight:600; font-size:13px; padding:8px 14px;
+    border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--ink-soft); cursor:pointer;
+  }
+  .qtd-row button.active{background:#8FD19E; color:#173B22; border-color:#8FD19E; font-weight:700;}
+
+  /* rastreador */
+  .heat-strip{display:flex; flex-wrap:wrap; gap:6px; margin:14px 0 20px;}
+  .heat-ball{
+    width:40px; text-align:center; font-family:'IBM Plex Mono';
+    border-radius:8px; padding:8px 0; color:#fff; font-size:12px;
+  }
+  .heat-ball b{display:block; font-size:15px;}
+
+  table.hist{border-collapse:collapse; width:100%; font-family:'IBM Plex Mono'; font-size:11.5px; margin-top:10px;}
+  table.hist th, table.hist td{border:1px solid var(--border-soft); padding:4px 3px; text-align:center;}
+  table.hist th{background:var(--surface-2); color:var(--ink-soft);}
+  table.hist td.x{background:var(--accent-deep); color:#fff; font-weight:700;}
+  table.hist .hist-scroll{overflow-x:auto;}
+  .hist-scroll{overflow-x:auto; max-height:460px; overflow-y:auto; border:1px solid var(--border-soft); border-radius:8px;}
+  .qtd-row button[disabled]{opacity:.5; cursor:wait;}
+
+  .avg-row{display:flex; gap:12px; margin-top:14px; font-family:'IBM Plex Mono'; font-size:13px; flex-wrap:wrap;}
+  .avg-row div{background:var(--surface-2); border:1px solid var(--border-soft); border-radius:8px; padding:8px 14px;}
+  .avg-row b{display:block; color:var(--ink); font-size:16px;}
+
+  footer{max-width:980px; margin:0 auto; padding:26px 20px 60px; color:var(--ink-faint); font-size:12px;}
+
+  /* ---------- página inicial (Início) ---------- */
+  .home-hero{margin-bottom:18px;}
+  .home-hero h2{font-size:24px; margin-bottom:6px;}
+  .home-list{display:flex; flex-direction:column; gap:0; border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; background:var(--surface);}
+  .home-list button{
+    display:flex; flex-direction:column; align-items:flex-start; gap:2px;
+    text-align:left; width:100%; background:var(--surface); border:none; border-bottom:1px solid var(--border-soft);
+    padding:16px 18px; cursor:pointer; font-family:'Inter';
+  }
+  .home-list button:last-child{border-bottom:none;}
+  .home-list button:hover{background:var(--surface-2);}
+  .home-list .h-name{font-weight:600; color:var(--ink); font-size:15px;}
+  .home-list .h-desc{font-size:12.5px; color:var(--ink-soft);}
+
+  /* ---------- tabela de prêmio + botão gerar apostas ---------- */
+  .prize-wrap{position:relative; margin:4px 0 14px;}
+  table.prize-table{border-collapse:collapse; width:100%; max-width:480px; font-family:'IBM Plex Mono'; font-size:13px;}
+  table.prize-table th, table.prize-table td{border:1px solid var(--border-soft); padding:8px 10px; text-align:center;}
+  table.prize-table th{background:var(--surface-2); color:var(--ink); font-weight:600;}
+  .prize-overlay{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center;
+    background:var(--overlay-bg); border-radius:8px; padding:14px;
+    font-size:13.5px; color:var(--ink-soft); max-width:480px;
+  }
+  .resultado-loteria{
+    border:1px solid var(--border); border-radius:10px; padding:12px 14px; margin:16px 0; background:var(--surface-2);
+    max-width:480px;
+  }
+  .resultado-loteria h3{font-size:14px; margin-bottom:6px;}
+  .resultado-loteria .rl-meta{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--ink-soft); margin-bottom:8px;}
+  .resultado-loteria .rl-meta strong{color:var(--ink);}
+  .resultado-loteria .balls{display:flex; flex-wrap:wrap; gap:5px;}
+  .resultado-loteria .ball{background:var(--accent-deep); color:#fff;}
+
+  /* ---------- grupos (Lotofácil Top 20) ---------- */
+  .groups-list{display:flex; flex-direction:column; gap:10px; margin-top:16px;}
+  .group-card{border:1px solid var(--border); border-radius:10px; padding:12px 14px; background:var(--surface);}
+  .group-card-top{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;}
+  .group-card-top .g-name{font-family:'IBM Plex Mono'; font-weight:700; color:var(--ink); font-size:13px;}
+  .group-numbers{display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px;}
+  .group-numbers .n{
+    width:24px;height:24px;border-radius:50%; display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono'; font-size:10.5px; font-weight:600;
+    background:var(--surface-2); color:var(--ink-soft);
+  }
+  .group-numbers .n.hit{background:var(--mark); color:#fff;}
+  .group-card .btn-check{
+    font-family:'Inter'; font-weight:600; font-size:12.5px; padding:7px 12px; border-radius:7px;
+    border:1px solid var(--border); background:var(--surface); color:var(--ink); cursor:pointer;
+  }
+  .group-card .g-result{font-family:'IBM Plex Mono'; font-size:12.5px; color:var(--mark); font-weight:700;}
+
+  /* ---------- jogos salvos ---------- */
+  .saved-list{display:flex; flex-direction:column; gap:10px; margin-top:6px;}
+  .saved-item{
+    border:1px solid var(--border); border-radius:10px; background:var(--surface); padding:14px 16px;
+    display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer;
+  }
+  .saved-item:hover{background:var(--surface-2);}
+  .saved-item .si-info{display:flex; flex-direction:column; gap:2px;}
+  .saved-item .si-tool{font-weight:600; color:var(--ink); font-size:14.5px;}
+  .saved-item .si-date{font-size:12px; color:var(--ink-faint); font-family:'IBM Plex Mono';}
+  .saved-item .si-del{background:transparent; border:none; color:var(--ink-faint); font-size:18px; cursor:pointer; padding:4px 8px; line-height:1;}
+  .empty-note{color:var(--ink-faint); font-size:14px;}
+
+  .conc-select{
+    width:100%; max-width:420px; display:block; margin:4px 0 12px;
+    font-family:'Inter'; font-size:15px; padding:12px 14px;
+    border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--ink);
+  }
+
+  .btn-save{
+    display:inline-block; font-family:'Inter'; font-weight:600; font-size:13.5px;
+    background:transparent; color:var(--accent-deep); border:1px solid var(--border);
+    border-radius:8px; padding:9px 16px; cursor:pointer; margin-top:10px;
+  }
+  .btn-save[disabled]{opacity:.4; cursor:not-allowed;}
+  .btn-save.saved{background:var(--accent-deep); color:#fff; border-color:var(--accent-deep);}
+
+  .name-input{
+    display:block; width:100%; max-width:420px; margin-top:14px;
+    font-family:'Inter'; font-size:14.5px; padding:11px 13px;
+    border:1px solid var(--border); border-radius:9px; background:var(--surface); color:var(--ink);
+  }
+  .name-input:focus{outline:none; border-color:var(--accent);}
+
+  .saved-item .si-edit{background:transparent; border:none; color:var(--ink-faint); font-size:15px; cursor:pointer; padding:4px 6px; line-height:1;}
+  .jd-name-row{display:flex; align-items:center; gap:8px; margin:-4px 0 12px;}
+  .jd-name-row .si-edit{background:transparent; border:none; color:var(--ink-faint); font-size:15px; cursor:pointer; padding:4px 6px; line-height:1;}
+
+  /* ---------- tela de acesso (login / cadastro / pagamento) ---------- */
+  .auth-gate{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:var(--bg); padding:28px 16px;
+  }
+  .auth-card{
+    width:100%; max-width:420px; background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:30px 24px; box-shadow:var(--shadow);
+  }
+  .auth-brand{text-align:center; margin-bottom:22px;}
+  .auth-brand h1{font-family:'Inter', system-ui, sans-serif; font-size:22px; color:var(--ink); margin:2px 0 4px; font-weight:700; letter-spacing:-.01em;}
+  .auth-brand h1 em{font-style:normal; color:var(--accent-deep);}
+  .auth-tag{font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint);}
+
+  .auth-tabs{display:flex; gap:8px; margin-bottom:18px;}
+  .auth-tab{
+    flex:1; padding:10px; border-radius:8px; border:1px solid var(--border);
+    background:var(--surface-2); color:var(--ink-soft); font-family:'Inter'; font-weight:600; font-size:14px; cursor:pointer;
+  }
+  .auth-tab.active{background:var(--accent-deep); color:#fff; border-color:var(--accent-deep);}
+
+  .auth-form{display:flex; flex-direction:column; gap:10px;}
+  .auth-form input{
+    font-family:'Inter'; font-size:15px; padding:12px 14px; border:1px solid var(--border);
+    border-radius:8px; background:var(--surface); color:var(--ink);
+  }
+  .auth-form input:focus{outline:none; border-color:var(--accent);}
+  .auth-form .btn{margin-top:4px; width:100%;}
+  .auth-error{color:var(--mark); font-size:13px; min-height:14px; margin:2px 0 0;}
+  .auth-note{color:var(--ink-soft); font-size:12.5px; margin:2px 0 0;}
+  .auth-welcome{text-align:center; font-size:14px; color:var(--ink-soft); margin-bottom:16px;}
+
+  .paywall-box{border:1px solid var(--border); border-radius:12px; padding:20px; text-align:center; background:var(--surface-2);}
+  .paywall-title{font-weight:700; color:var(--ink); font-size:16px; margin-bottom:4px;}
+  .paywall-price{font-family:'IBM Plex Mono'; font-size:25px; color:var(--ink); font-weight:700; margin:4px 0 10px;}
+  .paywall-desc{font-size:13px; color:var(--ink-soft); margin-bottom:16px;}
+  .paywall-box .btn{width:100%;}
+
+  .link-btn{
+    display:block; margin:18px auto 0; background:none; border:none; color:var(--ink-soft);
+    font-family:'Inter'; font-size:13px; text-decoration:underline; cursor:pointer;
+  }
+
+  /* ---------- modal alterar senha ---------- */
+  .modal-overlay{
+    display:none; position:fixed; inset:0; z-index:50;
+    background:rgba(20,21,26,.5);
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-card{
+    width:100%; max-width:380px; background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:26px 22px; box-shadow:0 20px 50px rgba(20,21,26,.3);
+  }
+  .modal-title{font-size:18px; margin-bottom:6px;}
+  .modal-sub{font-size:13px; color:var(--ink-soft); margin:0 0 16px;}
+  .modal-label{font-size:12.5px; color:var(--ink-soft); margin:2px 0 -4px;}
+  .modal-actions{display:flex; gap:10px; margin-top:6px;}
+  .modal-actions .btn{flex:1; width:auto;}
+  .modal-actions .btn.ghost{background:transparent;}
+
+  .modal-card-wide{max-width:460px; max-height:85vh; overflow-y:auto;}
+  .ajuda-body{font-size:14px; color:var(--ink); line-height:1.55;}
+  .ajuda-body p{margin:0 0 12px;}
+  .ajuda-body h4{font-size:13px; margin:16px 0 8px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em;}
+  .ajuda-body ol, .ajuda-body ul{margin:0 0 12px; padding-left:20px;}
+  .ajuda-body li{margin-bottom:6px;}
+  .ajuda-contato{
+    margin:8px 0 18px; padding:12px 14px; background:var(--surface-2); border:1px solid var(--border-soft);
+    border-radius:10px;
+  }
+  .ajuda-contato-link{font-family:'IBM Plex Mono'; font-size:13.5px; color:var(--accent-deep); font-weight:600; text-decoration:none;}
+  .ajuda-contato-link:hover{text-decoration:underline;}
+
+  /* ---------- toast de novo concurso ---------- */
+  .toast{
+    position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(140%);
+    max-width:90vw; width:380px;
+    background:var(--accent-deep); color:#fff; font-family:'Inter'; font-size:13.5px;
+    border-radius:10px; padding:13px 16px; box-shadow:0 10px 30px rgba(20,21,26,.35);
+    z-index:60; opacity:0; transition:transform .3s ease, opacity .3s ease;
+    pointer-events:none;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0); opacity:1; pointer-events:auto;}
+
+  @media (max-width:640px){
+    section.panel{padding:20px 14px 24px;}
+    .picker{grid-template-columns:repeat(5,1fr); max-width:none;}
+    .picker.wide{grid-template-columns:repeat(6,1fr); max-width:none;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .num-btn{transition:none;}
+  }
+</style>
+</head>
+<body>
+<script>
+  // aplica o tema salvo o quanto antes, pra evitar o "flash" de tela clara
+  try{
+    if (localStorage.getItem("lotofacil-theme") === "dark"){
+      document.body.classList.add("dark-theme");
+    }
+  }catch(e){ /* localStorage indisponível (ex: modo privado) — segue no tema claro */ }
+</script>
+
+<!-- ===================== TELA DE ACESSO (login / cadastro / pagamento) ===================== -->
+<div class="auth-gate" id="authGate">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <h1>Fechamentos <em>Lotofácil</em></h1>
+      <p class="auth-tag">LOTOFÁCIL EXPERT PROFISSIONAL</p>
+    </div>
+
+    <div class="gate-state" id="gateLoading">
+      <p style="text-align:center; color:var(--ink-soft); font-size:14px;">Verificando sua conta…</p>
+    </div>
+
+    <div class="gate-state" id="gatePaywall" style="display:none;">
+      <div style="text-align:center; font-size:28px; margin-bottom:6px;">🔒</div>
+      <h3 id="paywallTitulo" style="text-align:center; margin:0 0 6px;">Acesso às ferramentas</h3>
+      <p style="text-align:center; color:var(--ink-soft); font-size:13.5px; margin-bottom:16px;">
+        Fechamento Intermediário, Reduzido, 3x3, Erre 5, Top 20, Rastreador de tendências e jogos salvos.
+      </p>
+      <button class="btn" id="btnDesbloquear" type="button" style="width:100%;">Desbloquear acesso</button>
+      <p style="text-align:center; font-size:13px; color:var(--ink-soft); margin:10px 0 0;">Pagamento único · <span id="precoValor">R$ 19,90</span></p>
+      <p class="auth-error" id="erroPagamento" style="display:none; text-align:center;">Não consegui confirmar o pagamento. Tente novamente.</p>
+
+      <div id="contaBox" style="margin-top:22px;">
+        <div id="contaLogada" style="display:none;">
+          <p style="text-align:center; font-size:13px; color:var(--ink-soft);">
+            Você já está logado como <b id="paywallEmail"></b> — é só clicar em "Desbloquear acesso" acima.
+          </p>
+          <button class="link-btn" id="btnSairPaywall" type="button">Sair da conta</button>
+        </div>
+
+        <div id="contaFormularios">
+          <div id="loginBox">
+            <p style="font-size:13px; color:var(--ink-soft); margin-bottom:8px;">Já tem conta? Entre com seu e-mail e senha:</p>
+            <form class="auth-form" id="loginForm">
+              <input type="email" id="loginEmail" placeholder="seuemail@exemplo.com" required autocomplete="email">
+              <input type="password" id="loginSenha" placeholder="senha" required minlength="6" autocomplete="current-password">
+              <button type="submit" class="btn">Entrar</button>
+            </form>
+            <p class="auth-error" id="loginStatus"></p>
+            <button class="link-btn" id="btnMostrarRegistro" type="button">Ainda não tem conta? Registre-se grátis</button>
+            <button class="link-btn" id="btnMostrarEsqueci" type="button">Esqueci minha senha</button>
+          </div>
+
+          <div id="esqueciSenhaBox" style="display:none;">
+            <p style="font-size:13px; color:var(--ink-soft); margin-bottom:8px;">Digite seu e-mail — vamos mandar um link pra você criar uma senha nova:</p>
+            <form class="auth-form" id="esqueciSenhaForm">
+              <input type="email" id="esqueciSenhaEmail" placeholder="seuemail@exemplo.com" required>
+              <button type="submit" class="btn">Enviar link de recuperação</button>
+            </form>
+            <p class="auth-note" id="esqueciSenhaStatus"></p>
+            <button class="link-btn" id="btnVoltarLogin" type="button">Voltar pro login</button>
+          </div>
+
+          <div id="registroBox" style="display:none;">
+            <p style="font-size:13px; color:var(--ink-soft); margin-bottom:8px;">Criar conta é grátis — não cobra nada até você comprar o acesso:</p>
+            <form class="auth-form" id="registroForm">
+              <input type="email" id="registroEmail" placeholder="seuemail@exemplo.com" required autocomplete="email">
+              <input type="password" id="registroSenha" placeholder="crie uma senha" required minlength="6" autocomplete="new-password">
+              <button type="submit" class="btn">Criar conta grátis</button>
+            </form>
+            <p class="auth-error" id="registroStatus"></p>
+            <div id="registroConfirmeEmail" style="display:none; margin-top:6px;">
+              <p class="auth-note" style="margin:0 0 6px;">Confirme seu e-mail pra poder entrar. Não chegou? <button class="link-btn" id="btnReenviarConfirmacao" type="button" style="display:inline; margin:0; padding:0;">Reenviar e-mail de confirmação</button></p>
+              <p class="auth-note" id="reenviarConfirmacaoStatus" style="margin:0;"></p>
+            </div>
+            <button class="link-btn" id="btnMostrarLogin" type="button">Já tem conta? Entrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gate-state" id="gateCriarSenha" style="display:none;">
+      <div style="text-align:center; font-size:28px; margin-bottom:6px;">✅</div>
+      <h3 style="text-align:center; margin:0 0 6px;">Pagamento confirmado!</h3>
+      <p style="text-align:center; color:var(--ink-soft); font-size:13.5px; margin-bottom:16px;">
+        Crie uma senha pra acessar suas ferramentas sempre que quiser, em qualquer aparelho.
+      </p>
+      <form class="auth-form" id="criarSenhaForm">
+        <input type="email" id="criarEmail" placeholder="seuemail@exemplo.com" required>
+        <input type="password" id="criarSenha" placeholder="crie uma senha" required minlength="6">
+        <button type="submit" class="btn">Criar acesso</button>
+      </form>
+      <p class="auth-error" id="criarSenhaStatus"></p>
+    </div>
+
+    <div class="gate-state" id="gateNovaSenha" style="display:none;">
+      <div style="text-align:center; font-size:28px; margin-bottom:6px;">🔑</div>
+      <h3 style="text-align:center; margin:0 0 6px;">Crie sua nova senha</h3>
+      <p style="text-align:center; color:var(--ink-soft); font-size:13.5px; margin-bottom:16px;">
+        Digite a nova senha que você quer usar daqui pra frente.
+      </p>
+      <form class="auth-form" id="novaSenhaForm">
+        <input type="password" id="novaSenhaInput" placeholder="nova senha" required minlength="6">
+        <button type="submit" class="btn">Salvar nova senha</button>
+      </form>
+      <p class="auth-error" id="novaSenhaStatus"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== APP (só aparece com login + pagamento confirmados) ===================== -->
+<div id="appContent" style="display:none;">
+
+<div class="perf"></div>
+
+<div class="app-header" id="appHeader">
+  <div class="header-top">
+    <div>
+      <div class="header-title" id="headerTitle">Fechamento Intermediário</div>
+      <div class="header-sub">LOTOFÁCIL EXPERT PROFISSIONAL</div>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggleBtn" type="button" aria-label="Alternar modo escuro">
+        <span id="themeToggleIcon">🌙</span>
+      </button>
+      <button class="hamburger" id="hamburgerBtn" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="app-menu" id="appMenu">
+    <a class="menu-item" id="menuInicio">Início</a>
+    <a class="menu-item current" id="menuAction">Criar jogo</a>
+    <a class="menu-item" id="menuResultados">Resultados</a>
+    <a class="menu-item" id="menuSalvos">Jogos salvos</a>
+    <a class="menu-item" id="menuAjuda">Ajuda</a>
+
+    <div class="menu-item dropdown-toggle" id="produtosToggle">Meus produtos <span class="chev">▾</span></div>
+    <div class="dropdown-panel" id="produtosPanel">
+      <button type="button" data-target="panel-inicio">Início</button>
+      <button type="button" data-target="panel-erre7">Fechamento Intermediário</button>
+      <button type="button" data-target="panel-erre4">Fechamento Reduzido</button>
+      <button type="button" data-target="panel-3x3">Lotofácil 3x3</button>
+      <button type="button" data-target="panel-erre5">Lotofácil Erre 5</button>
+      <button type="button" data-target="panel-top20">Lotofácil Top 20</button>
+      <button type="button" data-target="panel-rastreador">Rastreador Tendências Lotofácil</button>
+    </div>
+
+    <div class="menu-item dropdown-toggle" id="contaToggle">Minha conta <span class="chev">▾</span></div>
+    <div class="dropdown-panel" id="contaPanel">
+      <div class="acc-name" id="contaAtualEmail">Conta</div>
+      <button type="button" id="btnSenha">Alterar senha</button>
+      <button type="button" id="btnSair">Sair</button>
+    </div>
+  </nav>
+</div>
+
+<div class="draw-strip" id="drawStrip">
+  <div class="draw-strip-inner">
+    <span class="draw-label">Concurso</span>
+    <strong id="hdrConcurso">3760</strong>
+    <span class="draw-date" id="hdrData">12/08/2026</span>
+    <div class="balls" id="lastDrawBalls"></div>
+  </div>
+</div>
+
+<main>
+
+  <!-- INÍCIO -->
+  <section class="panel active" id="panel-inicio">
+    <div class="eyebrow">Fechamentos Lotofácil</div>
+    <div class="home-hero">
+      <h2>Escolha o produto a ser acessado</h2>
+      <p class="desc">Ferramentas para montar, fechar e conferir seus jogos da Lotofácil.</p>
+    </div>
+    <div class="home-list">
+      <button type="button" data-target="panel-erre7">
+        <span class="h-name">Fechamento Intermediário</span>
+        <span class="h-desc">Exclua 7 números e gere todas as apostas de 15 com as 18 restantes.</span>
+      </button>
+      <button type="button" data-target="panel-erre4">
+        <span class="h-name">Fechamento Reduzido</span>
+        <span class="h-desc">Exclua 4 ímpares e feche um jogo maior com as 21 dezenas restantes.</span>
+      </button>
+      <button type="button" data-target="panel-3x3">
+        <span class="h-name">Lotofácil 3x3</span>
+        <span class="h-desc">Fixe 6 pares e 6 ímpares e complete com as 3 dezenas finais.</span>
+      </button>
+      <button type="button" data-target="panel-erre5">
+        <span class="h-name">Lotofácil Erre 5</span>
+        <span class="h-desc">Exclua 5 números e gere o fechamento com as 20 restantes.</span>
+      </button>
+      <button type="button" data-target="panel-top20">
+        <span class="h-name">Lotofácil Top 20</span>
+        <span class="h-desc">Grupos montados com as 20 dezenas mais quentes, prontos para conferir contra o último concurso.</span>
+      </button>
+      <button type="button" data-target="panel-rastreador">
+        <span class="h-name">Rastreador Tendências Lotofácil</span>
+        <span class="h-desc">Frequência das dezenas nos últimos concursos, do mais quente ao mais frio.</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ERRE 7 -->
+  <section class="panel" id="panel-erre7">
+    <div class="eyebrow">Fechamento intermediário</div>
+    <h2>Excluir 7 números</h2>
+    <p class="desc">Toque em 7 dezenas para tirá-las do seu fechamento. Com as 18 restantes, geramos todas as apostas de 15 números possíveis e simulamos o resultado contra o último concurso.</p>
+    <div class="picker" id="grid-erre7"></div>
+    <div class="status-line" id="status-erre7">Escolha <b>7</b> números para excluir.</div>
+
+    <div class="prize-wrap">
+      <table class="prize-table">
+        <thead><tr><th>Acerto</th><th>Quantidade</th><th>Prêmio (R$)</th></tr></thead>
+        <tbody id="prizeBody-erre7">
+          <tr><td>15 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>14 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>13 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>12 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>11 pontos</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div class="prize-overlay" id="overlay-erre7">Após a escolha dos 7 números, mostraremos uma simulação dos seus acertos com base no último concurso.</div>
+    </div>
+
+    <button class="btn" id="btn-erre7" type="button" disabled>Gerar apostas</button>
+
+    <div class="resultado-loteria">
+      <h3>Resultado da Lotofácil</h3>
+      <div class="rl-meta">Concurso <strong id="rlConcurso-erre7">3760</strong> de <span id="rlData-erre7">12/08/2026</span></div>
+      <div class="balls" id="rlBalls-erre7"></div>
+    </div>
+
+    <div class="result-box empty" id="result-erre7">Depois de gerar as apostas, a lista completa aparece aqui.</div>
+    <input type="text" class="name-input" id="name-erre7" placeholder="Nome do jogo (opcional)" maxlength="40">
+    <button class="btn-save" id="save-erre7" type="button" disabled>💾 Salvar jogo</button>
+  </section>
+
+  <!-- ERRE 4 -->
+  <section class="panel" id="panel-erre4">
+    <div class="eyebrow">Fechamento reduzido</div>
+    <h2>Excluir 4 números ímpares</h2>
+    <p class="desc">Escolha 4 dezenas ímpares para excluir. As 21 dezenas restantes formam um fechamento maior — o gerador monta todas as combinações de 15 números a partir delas.</p>
+    <div class="picker" id="grid-erre4"></div>
+    <div class="status-line" id="status-erre4">Escolha <b>4</b> números ímpares para excluir.</div>
+
+    <div class="prize-wrap">
+      <table class="prize-table">
+        <thead><tr><th>Acerto</th><th>Quantidade</th><th>Prêmio (R$)</th></tr></thead>
+        <tbody id="prizeBody-erre4">
+          <tr><td>15 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>14 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>13 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>12 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>11 pontos</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div class="prize-overlay" id="overlay-erre4">Após a escolha dos 4 números, mostraremos uma simulação dos seus acertos com base no último concurso.</div>
+    </div>
+
+    <button class="btn" id="btn-erre4" type="button" disabled>Gerar apostas</button>
+
+    <div class="resultado-loteria">
+      <h3>Resultado da Lotofácil</h3>
+      <div class="rl-meta">Concurso <strong id="rlConcurso-erre4">3760</strong> de <span id="rlData-erre4">12/08/2026</span></div>
+      <div class="balls" id="rlBalls-erre4"></div>
+    </div>
+
+    <div class="result-box empty" id="result-erre4">Depois de gerar as apostas, a lista completa aparece aqui.</div>
+    <input type="text" class="name-input" id="name-erre4" placeholder="Nome do jogo (opcional)" maxlength="40">
+    <button class="btn-save" id="save-erre4" type="button" disabled>💾 Salvar jogo</button>
+  </section>
+
+  <!-- 3x3 -->
+  <section class="panel" id="panel-3x3">
+    <div class="eyebrow">Lotofácil 3x3</div>
+    <h2>Monte em duas etapas</h2>
+    <p class="desc">Primeiro fixe 6 números pares, depois 6 números ímpares. Esses 12 números entram em todas as apostas; as 3 dezenas finais completam o jogo com todas as combinações possíveis do restante.</p>
+
+    <div class="step active" id="step-pares">
+      <span class="step-tag">Passo 1 de 2 — pares</span>
+      <div class="picker wide" id="grid-pares"></div>
+      <div class="status-line" id="status-pares">Escolha <b>6</b> números pares.</div>
+    </div>
+
+    <div class="step" id="step-impares">
+      <span class="step-tag">Passo 2 de 2 — ímpares</span>
+      <div class="picker wide" id="grid-impares"></div>
+      <div class="status-line" id="status-impares">Escolha <b>6</b> números ímpares.</div>
+      <button class="btn ghost" id="btn-voltar-pares" type="button" style="margin-bottom:14px;">← voltar aos pares</button>
+    </div>
+
+    <div class="prize-wrap">
+      <table class="prize-table">
+        <thead><tr><th>Acerto</th><th>Quantidade</th><th>Prêmio (R$)</th></tr></thead>
+        <tbody id="prizeBody-3x3">
+          <tr><td>15 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>14 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>13 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>12 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>11 pontos</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div class="prize-overlay" id="overlay-3x3">Após completar as duas etapas, mostraremos uma simulação dos seus acertos com base no último concurso.</div>
+    </div>
+
+    <button class="btn" id="btn-3x3" type="button" disabled>Gerar apostas</button>
+
+    <div class="resultado-loteria">
+      <h3>Resultado da Lotofácil</h3>
+      <div class="rl-meta">Concurso <strong id="rlConcurso-3x3">3760</strong> de <span id="rlData-3x3">12/08/2026</span></div>
+      <div class="balls" id="rlBalls-3x3"></div>
+    </div>
+
+    <div class="result-box empty" id="result-3x3">Complete as duas etapas para ver as apostas geradas.</div>
+    <input type="text" class="name-input" id="name-3x3" placeholder="Nome do jogo (opcional)" maxlength="40">
+    <button class="btn-save" id="save-3x3" type="button" disabled>💾 Salvar jogo</button>
+  </section>
+
+  <!-- TOP 20 / GRUPOS -->
+  <section class="panel" id="panel-top20">
+    <div class="eyebrow">Lotofácil Top 20</div>
+    <h2>Grupos prontos</h2>
+    <p class="desc">Grupos de apostas montados com as 15 dezenas mais frequentes dentro do pool das 20 dezenas mais quentes. Toque em "Conferir resultados" em cada grupo para ver quantos pontos ele faria no último concurso.</p>
+    <p class="note" id="top20PoolInfo" style="margin-bottom:16px;"></p>
+
+    <div class="resultado-loteria">
+      <h3>Resultado da Lotofácil</h3>
+      <div class="rl-meta">Concurso <strong id="rlConcurso-top20">3760</strong> de <span id="rlData-top20">12/08/2026</span></div>
+      <div class="balls" id="rlBalls-top20"></div>
+    </div>
+
+    <div class="groups-list" id="groupsList"></div>
+  </section>
+
+  <!-- ERRE 5 -->
+  <section class="panel" id="panel-erre5">
+    <div class="eyebrow">Expert profissional</div>
+    <h2>Excluir 5 números</h2>
+    <p class="desc">Escolha 5 dezenas para excluir de suas apostas. As 20 restantes formam o fechamento — todas as combinações de 15 números são geradas e simuladas contra o último concurso.</p>
+    <div class="picker" id="grid-erre5"></div>
+    <div class="status-line" id="status-erre5">Escolha <b>5</b> números para excluir.</div>
+
+    <div class="prize-wrap">
+      <table class="prize-table">
+        <thead><tr><th>Acerto</th><th>Quantidade</th><th>Prêmio (R$)</th></tr></thead>
+        <tbody id="prizeBody-erre5">
+          <tr><td>15 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>14 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>13 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>12 pontos</td><td>—</td><td>—</td></tr>
+          <tr><td>11 pontos</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <div class="prize-overlay" id="overlay-erre5">Após a escolha dos 5 números, mostraremos uma simulação dos seus acertos com base no último concurso.</div>
+    </div>
+
+    <button class="btn" id="btn-erre5" type="button" disabled>Gerar apostas</button>
+
+    <div class="resultado-loteria">
+      <h3>Resultado da Lotofácil</h3>
+      <div class="rl-meta">Concurso <strong id="rlConcurso-erre5">3760</strong> de <span id="rlData-erre5">12/08/2026</span></div>
+      <div class="balls" id="rlBalls-erre5"></div>
+    </div>
+
+    <div class="result-box empty" id="result-erre5">Depois de gerar as apostas, a lista completa aparece aqui.</div>
+    <input type="text" class="name-input" id="name-erre5" placeholder="Nome do jogo (opcional)" maxlength="40">
+    <button class="btn-save" id="save-erre5" type="button" disabled>💾 Salvar jogo</button>
+  </section>
+
+  <!-- RASTREADOR -->
+  <section class="panel" id="panel-rastreador">
+    <div class="eyebrow">Rastreador de tendências</div>
+    <h2>Frequência das dezenas</h2>
+    <p class="desc">Quantidade de concursos usada para calcular a frequência de cada dezena, do mais quente ao mais frio.</p>
+    <div class="qtd-row" id="qtdRow"></div>
+    <div class="heat-strip" id="heatStrip"></div>
+
+    <h3 style="font-size:16px; margin-bottom:8px;">Histórico dos concursos</h3>
+    <div class="hist-scroll">
+      <table class="hist" id="histTable"></table>
+    </div>
+    <div class="avg-row" id="avgRow"></div>
+  </section>
+
+  <!-- JOGOS SALVOS -->
+  <section class="panel" id="panel-salvos">
+    <div class="eyebrow">Meus jogos</div>
+    <h2>Jogos salvos</h2>
+    <p class="desc">Seus jogos gerados e salvos neste navegador. Toque em um jogo para conferir contra qualquer concurso.</p>
+    <div class="saved-list" id="savedList"></div>
+  </section>
+
+  <!-- DETALHE DE UM JOGO SALVO -->
+  <section class="panel" id="panel-jogo-detalhe">
+    <div class="eyebrow" id="jdEyebrow">Jogo salvo</div>
+    <h2 id="jdTitle">Apostas do jogo salvo</h2>
+    <div class="jd-name-row">
+      <p class="desc" id="jdSavedAt" style="margin:0;"><b>Jogo</b> salvo em —</p>
+      <button class="si-edit" id="jdRenameBtn" type="button" title="Renomear jogo">✎ renomear</button>
+    </div>
+
+    <select class="conc-select" id="jdConcursoSelect">
+      <option value="">Selecione um concurso para conferir</option>
+    </select>
+    <button class="btn" id="jdConferirBtn" type="button">Conferir</button>
+
+    <div class="result-box empty" id="jdResult">Selecione um concurso e toque em "Conferir" para ver os acertos.</div>
+
+    <button class="btn-save" id="jdVoltarBtn" type="button" style="margin-top:16px;">← voltar aos jogos salvos</button>
+  </section>
+
+</main>
+
+<footer id="siteFooter">
+  As combinações e simulações são calculadas no seu navegador. Valores de aposta e premiação são referências gerais
+  (aposta mínima de 15 números e prêmios fixos de 11 a 13 pontos) — confirme sempre os valores vigentes no site oficial da Loterias Caixa antes de apostar.
+</footer>
+
+<div class="modal-overlay" id="senhaModalOverlay">
+  <div class="modal-card">
+    <h3 class="modal-title">Alterar senha</h3>
+    <p class="modal-sub">Escolha uma nova senha e confirme para garantir que digitou certo.</p>
+    <form class="auth-form" id="senhaModalForm">
+      <label class="modal-label" for="senhaModalNova">Nova senha</label>
+      <input type="password" id="senhaModalNova" placeholder="mínimo 6 caracteres" minlength="6" required autocomplete="new-password">
+      <label class="modal-label" for="senhaModalConfirma">Confirmar nova senha</label>
+      <input type="password" id="senhaModalConfirma" placeholder="digite novamente" minlength="6" required autocomplete="new-password">
+      <p class="auth-error" id="senhaModalErro"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" id="senhaModalCancelar">Cancelar</button>
+        <button type="submit" class="btn" id="senhaModalSalvar">Salvar nova senha</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="ajudaModalOverlay">
+  <div class="modal-card modal-card-wide">
+    <h3 class="modal-title" id="ajudaModalTitulo">Ajuda</h3>
+    <div class="ajuda-body" id="ajudaModalCorpo"></div>
+    <div class="ajuda-contato">
+      <p class="modal-label" style="margin:0 0 4px;">Precisa de mais ajuda?</p>
+      <a class="ajuda-contato-link" id="ajudaModalEmail" href="#"></a>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="ajudaModalFechar" style="flex:1;">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="novoConcursoToast"></div>
+
+
+<div class="perf bottom"></div>
+
+</div>
+<!-- fim de #appContent -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* =========================================================================
+   CONFIGURAÇÃO — mesmo projeto Supabase e mesmas Edge Functions de
+   pagamento já usados no seu resultados-loterias.html. A chave "anon" é
+   pública por natureza (é feita pra ficar no front-end); a chave secreta
+   do Stripe continua só no servidor, dentro das suas Edge Functions.
+   ========================================================================= */
+const SUPABASE_URL      = "https://xeaqteghrednlqqkglzd.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_6r4fBlE9MGio9sKrSrYa8w_NTp5gl0y";
+
+const API_CRIAR_CHECKOUT     = "https://xeaqteghrednlqqkglzd.supabase.co/functions/v1/loterias-criar-checkout";
+const API_VERIFICAR_PAGAMENTO = "https://xeaqteghrednlqqkglzd.supabase.co/functions/v1/loterias-verificar-pagamento";
+
+// Identificador deste produto dentro das suas tabelas `desbloqueios` e
+// `jogos_salvos` (mesmo esquema do resultados-loterias.html, só que com um
+// loteria_id próprio, pra não misturar com o acesso das dicas).
+// IMPORTANTE: confirme se as Edge Functions loterias-criar-checkout /
+// loterias-verificar-pagamento aceitam esse id (ou me diga qual id devo
+// usar aqui, se você já tiver definido um).
+const PRODUTO_ID   = "fechamentos-lotofacil";
+const PRECO_EXIBICAO = "R$ 19,90"; // só o texto mostrado na tela
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function cabecalhosFunction(){
+  return {
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+    "apikey": SUPABASE_ANON_KEY,
+  };
+}
+
+(function(){
+  "use strict";
+
+  const authGate   = document.getElementById("authGate");
+  const appContent = document.getElementById("appContent");
+  const states = {
+    loading:    document.getElementById("gateLoading"),
+    paywall:    document.getElementById("gatePaywall"),
+    criarSenha: document.getElementById("gateCriarSenha"),
+    novaSenha:  document.getElementById("gateNovaSenha"),
+  };
+  document.getElementById("precoValor").textContent = PRECO_EXIBICAO;
+
+  function showState(key){
+    Object.values(states).forEach(el=> el.style.display = "none");
+    states[key].style.display = "block";
+  }
+  function unlockApp(){
+    authGate.style.display = "none";
+    appContent.style.display = "block";
+    const contaEl = document.getElementById("contaAtualEmail");
+    if (contaEl && usuarioAtual) contaEl.textContent = usuarioAtual.email;
+  }
+
+  let usuarioAtual = null;
+  let acessoLiberado = false;
+
+  async function verificarLogin(){
+    const { data } = await supabaseClient.auth.getUser();
+    usuarioAtual = data?.user || null;
+    atualizarInterfaceLogin();
+    return usuarioAtual;
+  }
+
+  function atualizarInterfaceLogin(){
+    const contaLogada = document.getElementById("contaLogada");
+    const contaFormularios = document.getElementById("contaFormularios");
+    const paywallEmail = document.getElementById("paywallEmail");
+    if (usuarioAtual){
+      contaLogada.style.display = "block";
+      contaFormularios.style.display = "none";
+      paywallEmail.textContent = usuarioAtual.email;
+    } else {
+      contaLogada.style.display = "none";
+      contaFormularios.style.display = "block";
+    }
+  }
+
+  async function carregarAcesso(){
+    acessoLiberado = false;
+    if (!usuarioAtual) return;
+    const { data, error } = await supabaseClient
+      .from("desbloqueios")
+      .select("loteria_id")
+      .eq("user_id", usuarioAtual.id)
+      .eq("loteria_id", PRODUTO_ID)
+      .maybeSingle();
+    if (error){ console.error(error); return; }
+    acessoLiberado = !!data;
+  }
+
+  // abas Entrar / Registrar / Esqueci senha
+  document.getElementById("btnMostrarRegistro").addEventListener("click", ()=>{
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("registroBox").style.display = "block";
+  });
+  document.getElementById("btnMostrarLogin").addEventListener("click", ()=>{
+    document.getElementById("registroBox").style.display = "none";
+    document.getElementById("esqueciSenhaBox").style.display = "none";
+    document.getElementById("loginBox").style.display = "block";
+  });
+  document.getElementById("btnMostrarEsqueci").addEventListener("click", ()=>{
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("esqueciSenhaBox").style.display = "block";
+  });
+  document.getElementById("btnVoltarLogin").addEventListener("click", ()=>{
+    document.getElementById("esqueciSenhaBox").style.display = "none";
+    document.getElementById("loginBox").style.display = "block";
+  });
+
+  document.getElementById("esqueciSenhaForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const email = document.getElementById("esqueciSenhaEmail").value.trim();
+    const statusEl = document.getElementById("esqueciSenhaStatus");
+    statusEl.textContent = "Enviando...";
+    try{
+      const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+      if (error) throw error;
+      statusEl.textContent = "Link enviado! Confira seu e-mail (e o spam).";
+    }catch(err){
+      console.error(err);
+      statusEl.textContent = "Não consegui enviar o link. Confira o e-mail e tente de novo.";
+    }
+  });
+
+  supabaseClient.auth.onAuthStateChange((event)=>{
+    if (event === "PASSWORD_RECOVERY") showState("novaSenha");
+  });
+
+  document.getElementById("novaSenhaForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const novaSenha = document.getElementById("novaSenhaInput").value;
+    const statusEl = document.getElementById("novaSenhaStatus");
+    const btn = e.target.querySelector("button");
+    btn.disabled = true;
+    statusEl.textContent = "Salvando...";
+    try{
+      const { error } = await supabaseClient.auth.updateUser({ password: novaSenha });
+      if (error) throw error;
+      statusEl.textContent = "Senha alterada! Redirecionando...";
+      window.history.replaceState({}, "", window.location.pathname);
+      await verificarLogin();
+      await carregarAcesso();
+      if (acessoLiberado) unlockApp(); else showState("paywall");
+    }catch(err){
+      console.error(err);
+      statusEl.textContent = "Erro ao salvar a nova senha. Tente novamente.";
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById("loginForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value.trim();
+    const senha = document.getElementById("loginSenha").value;
+    const statusEl = document.getElementById("loginStatus");
+    statusEl.textContent = "Entrando...";
+    try{
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
+      if (error) throw error;
+      await verificarLogin();
+      await carregarAcesso();
+      if (acessoLiberado) unlockApp();
+      else statusEl.textContent = "Login ok! Agora é só clicar em \"Desbloquear acesso\".";
+    }catch(err){
+      console.error(err);
+      const msg = (err.message || "").toLowerCase();
+      if (msg.includes("email not confirmed") || msg.includes("email_not_confirmed")){
+        statusEl.innerHTML = "Seu e-mail ainda não foi confirmado. Confira sua caixa de entrada (e o spam).";
+      } else {
+        statusEl.textContent = "E-mail ou senha incorretos.";
+      }
+    }
+  });
+
+  document.getElementById("registroForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const email = document.getElementById("registroEmail").value.trim();
+    const senha = document.getElementById("registroSenha").value;
+    const statusEl = document.getElementById("registroStatus");
+    const confirmeBox = document.getElementById("registroConfirmeEmail");
+    confirmeBox.style.display = "none";
+    statusEl.textContent = "Criando conta...";
+    try{
+      const { data, error } = await supabaseClient.auth.signUp({ email, password: senha });
+      if (error) throw error;
+
+      if (!data.session){
+        // projeto exige confirmação de e-mail: ainda não há sessão válida
+        statusEl.textContent = "";
+        document.getElementById("registroForm").reset();
+        confirmeBox.style.display = "block";
+        confirmeBox.dataset.email = email;
+        return;
+      }
+
+      usuarioAtual = data.user;
+      atualizarInterfaceLogin();
+      statusEl.textContent = "";
+    }catch(err){
+      console.error(err);
+      statusEl.textContent = err.message?.toLowerCase().includes("already")
+        ? "Já existe uma conta com esse e-mail. Tenta entrar em vez de registrar."
+        : "Erro ao criar conta. Tente novamente.";
+    }
+  });
+
+  document.getElementById("btnReenviarConfirmacao").addEventListener("click", async ()=>{
+    const confirmeBox = document.getElementById("registroConfirmeEmail");
+    const email = confirmeBox.dataset.email;
+    const statusEl = document.getElementById("reenviarConfirmacaoStatus");
+    if (!email) return;
+    statusEl.textContent = "Reenviando...";
+    try{
+      const { error } = await supabaseClient.auth.resend({ type: "signup", email });
+      if (error) throw error;
+      statusEl.textContent = "E-mail reenviado! Confira sua caixa de entrada (e o spam).";
+    }catch(err){
+      console.error(err);
+      statusEl.textContent = "Não consegui reenviar agora. Tente de novo em instantes.";
+    }
+  });
+
+  async function sair(){
+    await supabaseClient.auth.signOut();
+    window.location.reload();
+  }
+  document.getElementById("btnSairPaywall").addEventListener("click", sair);
+
+  document.getElementById("btnDesbloquear").addEventListener("click", async ()=>{
+    const btn = document.getElementById("btnDesbloquear");
+    btn.disabled = true;
+    btn.textContent = "Abrindo pagamento...";
+    try{
+      const resp = await fetch(API_CRIAR_CHECKOUT, {
+        method: "POST",
+        headers: cabecalhosFunction(),
+        body: JSON.stringify({
+          successUrl: window.location.origin + window.location.pathname,
+          cancelUrl: window.location.origin + window.location.pathname,
+          userId: usuarioAtual ? usuarioAtual.id : null,
+          loteriaId: PRODUTO_ID
+        })
+      });
+      const dados = await resp.json();
+      if (dados.url){ window.location.href = dados.url; }
+      else { throw new Error("URL de checkout não retornada"); }
+    }catch(err){
+      console.error(err);
+      btn.disabled = false;
+      btn.textContent = "Desbloquear acesso";
+      document.getElementById("erroPagamento").style.display = "block";
+    }
+  });
+
+  document.getElementById("criarSenhaForm").addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    const sessionId = e.target.dataset.sessionId;
+    const email = document.getElementById("criarEmail").value.trim();
+    const senha = document.getElementById("criarSenha").value;
+    const statusEl = document.getElementById("criarSenhaStatus");
+    const btn = e.target.querySelector("button");
+    btn.disabled = true;
+    statusEl.textContent = "Criando acesso...";
+    try{
+      let { data, error } = await supabaseClient.auth.signUp({ email, password: senha });
+      if (error && error.message?.toLowerCase().includes("already")){
+        ({ data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha }));
+      }
+      if (error) throw error;
+
+      const userId = data.user?.id;
+      if (!userId) throw new Error("Não consegui identificar o usuário criado");
+
+      const resp = await fetch(API_VERIFICAR_PAGAMENTO, {
+        method: "POST",
+        headers: cabecalhosFunction(),
+        body: JSON.stringify({ sessionId, userId })
+      });
+      const dados = await resp.json();
+
+      if (dados.pago){
+        usuarioAtual = data.user;
+        atualizarInterfaceLogin();
+        await carregarAcesso();
+        window.history.replaceState({}, "", window.location.pathname);
+        if (acessoLiberado) unlockApp();
+        else { statusEl.textContent = "Não encontrei esse pagamento pra este produto. Fale com o suporte."; btn.disabled = false; }
+      }else{
+        statusEl.textContent = dados.error || "Não consegui confirmar o pagamento pra essa conta.";
+        btn.disabled = false;
+      }
+    }catch(err){
+      console.error(err);
+      statusEl.textContent = "Erro ao criar o acesso. Tente novamente.";
+      btn.disabled = false;
+    }
+  });
+
+  async function iniciarAcesso(){
+    showState("paywall");
+    await verificarLogin();
+    await carregarAcesso();
+
+    const params = new URLSearchParams(window.location.search);
+    const sessionIdPago = params.get("session_id");
+
+    if (sessionIdPago && params.get("pago") === "1"){
+      if (usuarioAtual){
+        const resp = await fetch(API_VERIFICAR_PAGAMENTO, {
+          method: "POST",
+          headers: cabecalhosFunction(),
+          body: JSON.stringify({ sessionId: sessionIdPago, userId: usuarioAtual.id })
+        });
+        const dados = await resp.json();
+        window.history.replaceState({}, "", window.location.pathname);
+        if (dados.pago){
+          await carregarAcesso();
+          if (acessoLiberado) unlockApp(); else showState("paywall");
+        }else{
+          document.getElementById("erroPagamento").style.display = "block";
+          showState("paywall");
+        }
+      }else{
+        showState("criarSenha");
+        document.getElementById("criarSenhaForm").dataset.sessionId = sessionIdPago;
+      }
+    }else{
+      if (acessoLiberado) unlockApp(); else showState("paywall");
+    }
+  }
+
+  iniciarAcesso();
+
+  // expõe o cliente e os dados de conta para o resto do app
+  // (botões "Sair" e "Alterar senha" em Minha conta, dentro do app já desbloqueado)
+  window.__lotofacilAuth = {
+    supabaseClient,
+    getUsuario: ()=> usuarioAtual,
+    signOut: async ()=>{ await supabaseClient.auth.signOut(); window.location.reload(); }
+  };
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- dados base (valores de fallback; atualizados pela API abaixo) ---------------- */
+  let ULTIMO_CONCURSO = 3760;
+  let ULTIMO_SORTEIO = [2,4,5,8,9,10,11,13,14,16,19,21,22,24,25];
+
+  let HISTORICO = [
+    {c:3751, data:"02/08/2026", n:[1,2,4,7,8,9,11,12,16,17,18,19,21,23,24], rep:null, pares:7, impares:8},
+    {c:3752, data:"03/08/2026", n:[2,3,6,7,9,10,11,12,13,14,15,16,17,21,24], rep:9,   pares:7, impares:8},
+    {c:3753, data:"04/08/2026", n:[1,2,4,6,8,9,14,15,16,17,19,21,22,24,25],  rep:9,   pares:8, impares:7},
+    {c:3754, data:"05/08/2026", n:[1,3,4,5,7,8,11,12,13,14,16,20,21,23,25],  rep:7,   pares:6, impares:9},
+    {c:3755, data:"06/08/2026", n:[3,4,5,7,8,9,11,12,16,18,20,22,23,24,25],  rep:11,  pares:8, impares:7},
+    {c:3756, data:"07/08/2026", n:[2,3,5,6,9,10,11,13,14,15,16,19,20,21,22], rep:7,   pares:7, impares:8},
+    {c:3757, data:"09/08/2026", n:[1,2,3,4,6,8,11,12,15,17,20,21,22,23,24],  rep:8,   pares:8, impares:7},
+    {c:3758, data:"10/08/2026", n:[1,3,4,5,8,9,11,12,13,14,17,18,20,24,25],  rep:9,   pares:7, impares:8},
+    {c:3759, data:"11/08/2026", n:[1,2,4,5,6,7,9,10,11,12,13,14,17,24,25],   rep:11,  pares:7, impares:8},
+    {c:3760, data:"12/08/2026", n:[2,4,5,8,9,10,11,13,14,16,19,21,22,24,25], rep:10,  pares:8, impares:7},
+  ];
+
+  let FREQ10 = {11:9,4:8,9:8,24:8,2:7,8:7,12:7,16:7,21:7,14:7,1:6,17:6,3:6,13:6,25:6,5:6,7:5,6:5,22:5,20:5,19:4,23:4,10:4,15:4,18:3};
+
+  // ---------------- busca o concurso mais recente e o histórico direto na API pública ----------------
+  // API: https://github.com/guto-alves/loterias-api (mesma usada no resultados-loterias.html)
+  const API_LOTERIA_BASE = "https://loteriascaixa-api.herokuapp.com/api/lotofacil";
+  let QTD_HISTORICO = 10;
+
+  async function carregarUltimosResultados(qtd){
+    qtd = qtd || QTD_HISTORICO;
+    try{
+      const latestResp = await fetch(`${API_LOTERIA_BASE}/latest`);
+      if (!latestResp.ok) throw new Error("Falha ao buscar o concurso mais recente");
+      const latestJson = await latestResp.json();
+      const concursoAtual = latestJson.concurso;
+
+      const numerosAnteriores = [];
+      for (let i=1; i<qtd; i++) numerosAnteriores.push(concursoAtual - i);
+
+      const respostas = await Promise.all(
+        numerosAnteriores.map(n =>
+          fetch(`${API_LOTERIA_BASE}/${n}`)
+            .then(r => r.ok ? r.json() : null)
+            .catch(()=> null)
+        )
+      );
+
+      const brutos = [latestJson, ...respostas.filter(Boolean)]
+        .map(j => ({
+          c: j.concurso,
+          data: j.data,
+          n: (j.dezenas || []).map(Number).sort((a,b)=>a-b)
+        }))
+        .sort((a,b)=> a.c - b.c); // do mais antigo pro mais recente
+
+      if (!brutos.length) return false;
+
+      const novoHistorico = brutos.map((item, i)=>{
+        const pares = item.n.filter(x=>x%2===0).length;
+        const impares = item.n.length - pares;
+        let rep = null;
+        if (i>0){
+          const anterior = new Set(brutos[i-1].n);
+          rep = item.n.filter(x=>anterior.has(x)).length;
+        }
+        return { c:item.c, data:item.data, n:item.n, rep, pares, impares };
+      });
+
+      const novaFreq = {};
+      novoHistorico.forEach(h => h.n.forEach(num => { novaFreq[num] = (novaFreq[num]||0) + 1; }));
+
+      HISTORICO = novoHistorico;
+      const ultimo = novoHistorico[novoHistorico.length-1];
+      ULTIMO_CONCURSO = ultimo.c;
+      ULTIMO_SORTEIO = ultimo.n;
+      FREQ10 = novaFreq;
+      QTD_HISTORICO = novoHistorico.length;
+
+      return true;
+    }catch(err){
+      console.error("Não consegui buscar o resultado mais recente da Lotofácil, usando dados de referência:", err);
+      return false;
+    }
+  }
+
+  /* prêmios fixos de referência (Lotofácil, valores gerais — confirme no site oficial) */
+  const PREMIO_REF = {11:6, 12:12, 13:30, 14:null, 15:null}; // null = variável / rateio
+  const VALOR_APOSTA = 3; // referência aposta mínima 15 números
+
+  const pad2 = n => (n<10? "0"+n : ""+n);
+
+  function updateFooter(){
+    const footerEl = document.getElementById("siteFooter");
+    if (!footerEl || !HISTORICO.length) return;
+    const primeiro = HISTORICO[0];
+    const ultimo = HISTORICO[HISTORICO.length-1];
+    const nAnteriores = HISTORICO.length - 1;
+    const linha = document.createElement("div");
+    linha.id = "footerConcursoInfo";
+    linha.textContent = nAnteriores > 0
+      ? `Ferramentas geradas a partir de dados do concurso ${ultimo.c} (${ultimo.data}) e dos ${nAnteriores} concursos anteriores (desde o ${primeiro.c}).`
+      : `Ferramentas geradas a partir de dados do concurso ${ultimo.c} (${ultimo.data}).`;
+    const existente = document.getElementById("footerConcursoInfo");
+    if (existente) existente.replaceWith(linha);
+    else footerEl.insertBefore(linha, footerEl.firstChild);
+  }
+
+  /* ---------------- combinatória ---------------- */
+  function combinationsIdx(n, k){
+    const result = [];
+    if (k < 0 || k > n) return result;
+    const idx = [];
+    for (let i=0;i<k;i++) idx.push(i);
+    while (true){
+      result.push(idx.slice());
+      let i = k-1;
+      while (i>=0 && idx[i] === n-k+i) i--;
+      if (i<0) break;
+      idx[i]++;
+      for (let j=i+1;j<k;j++) idx[j]=idx[j-1]+1;
+    }
+    return result;
+  }
+
+  // gera todas as apostas de "size" números a partir de poolArr (array de dezenas)
+  function generateGames(poolArr, size){
+    const n = poolArr.length;
+    const k = size;
+    if (k > n) return [];
+    const kSmall = Math.min(k, n-k);
+    const idxCombos = combinationsIdx(n, kSmall);
+    const useDirect = (kSmall === k);
+    return idxCombos.map(idx => {
+      if (useDirect){
+        return idx.map(i => poolArr[i]);
+      } else {
+        const exclude = new Set(idx);
+        const game = [];
+        for (let i=0;i<n;i++) if(!exclude.has(i)) game.push(poolArr[i]);
+        return game;
+      }
+    });
+  }
+
+  function simulate(games){
+    const winSet = new Set(ULTIMO_SORTEIO);
+    const counts = {11:0,12:0,13:0,14:0,15:0};
+    for (const g of games){
+      let hits = 0;
+      for (const num of g) if (winSet.has(num)) hits++;
+      if (hits >= 11 && hits <= 15) counts[hits]++;
+    }
+    return counts;
+  }
+
+  function sampleGames(games, count){
+    // amostra espalhada pelo conjunto inteiro (não só os primeiros da lista),
+    // pra dar uma visão real da variedade das combinações geradas
+    if (games.length <= count) return games;
+    const out = [];
+    const step = games.length / count;
+    for (let i=0;i<count;i++) out.push(games[Math.floor(i*step)]);
+    return out;
+  }
+
+  // monta as linhas de amostra destacando, em cada jogo, os números que
+  // NÃO apareciam no jogo anterior — assim fica visível o que realmente muda
+  // entre uma aposta e outra (num fechamento, a maioria das dezenas se repete
+  // de propósito: é isso que garante a cobertura de todas as combinações).
+  // com showScore=true, mostra também a pontuação de frequência do jogo
+  // (soma do FREQ10 das dezenas), o mesmo critério usado pra ordenar a lista.
+  function renderSampleRows(amostra, showScore){
+    let prevSet = null;
+    let html = "";
+    for (const g of amostra){
+      const set = new Set(g);
+      const nums = g.map(n=>{
+        const isDiff = prevSet && !prevSet.has(n);
+        return `<span class="n${isDiff?" diff":""}">${pad2(n)}</span>`;
+      }).join(" ");
+      const scoreTxt = showScore ? `<span class="sample-score">freq. ${scoreGameByFreq(g)}</span>` : "";
+      const shareBtn = `<button type="button" class="sample-share" data-nums="${g.join(",")}" title="Compartilhar no WhatsApp" aria-label="Compartilhar este jogo no WhatsApp">📤</button>`;
+      html += `<div class="sample-row">${nums}${scoreTxt}${shareBtn}</div>`;
+      prevSet = set;
+    }
+    return html;
+  }
+
+  // liga os botões de compartilhar (📤) dentro de um container já renderizado
+  function ativarBotoesCompartilhar(container){
+    container.querySelectorAll(".sample-share").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const numeros = btn.dataset.nums.split(",").map(n=>parseInt(n,10));
+        compartilharJogoWhatsApp(numeros);
+      });
+    });
+  }
+
+  function compartilharJogoWhatsApp(numeros){
+    const texto = `Minha aposta Lotofácil (${numeros.length} números):\n${numeros.map(pad2).join(" - ")}`;
+    const url = "https://wa.me/?text=" + encodeURIComponent(texto);
+    window.open(url, "_blank", "noopener");
+  }
+
+  // baixa todos os jogos (não só a amostra) como um arquivo .csv
+  function baixarCSV(games, nomeArquivo){
+    const maxLen = Math.max(...games.map(g=>g.length));
+    const header = Array.from({length:maxLen}, (_,i)=>`Dezena ${i+1}`).join(";");
+    const linhas = games.map(g => g.map(pad2).join(";"));
+    const csv = "\uFEFF" + [header, ...linhas].join("\r\n"); // BOM: acentua certo no Excel
+    const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = nomeArquivo;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // abre uma aba nova com todos os jogos numa tabela pra imprimir / salvar como PDF
+  function imprimirJogos(games, nomeFerramenta){
+    const win = window.open("", "_blank");
+    if (!win) { alert("Seu navegador bloqueou a abertura da nova aba. Permita pop-ups pra esse site e tente de novo."); return; }
+    const maxLen = Math.max(...games.map(g=>g.length));
+    const linhas = games.map((g,i)=> `<tr><td>${i+1}</td>${g.map(n=>`<td>${pad2(n)}</td>`).join("")}</tr>`).join("");
+    win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${nomeFerramenta} — ${games.length} jogos</title>
+      <style>
+        body{font-family:Arial, Helvetica, sans-serif; padding:24px; color:#111;}
+        h1{font-size:16px; margin:0 0 4px;}
+        p{font-size:12px; color:#555; margin:0 0 16px;}
+        table{border-collapse:collapse; width:100%; font-size:11px;}
+        td,th{border:1px solid #ccc; padding:3px 6px; text-align:center;}
+        th{background:#f0f0f0;}
+        @media print{ body{padding:0;} }
+      </style></head><body>
+      <h1>${nomeFerramenta}</h1>
+      <p>${games.length} jogos de 15 números gerados — Fechamentos Lotofácil.</p>
+      <table><thead><tr><th>#</th>${Array.from({length:maxLen}, (_,i)=>`<th>D${i+1}</th>`).join("")}</tr></thead>
+      <tbody>${linhas}</tbody></table>
+      <script>window.onload = function(){ window.print(); };</` + `script>
+      </body></html>`);
+    win.document.close();
+  }
+
+  function gamesSummary(games){
+    let minSoma=Infinity, maxSoma=-Infinity, minPares=Infinity, maxPares=-Infinity;
+    for (const g of games){
+      const soma = g.reduce((a,b)=>a+b,0);
+      const pares = g.filter(n=>n%2===0).length;
+      if (soma<minSoma) minSoma=soma;
+      if (soma>maxSoma) maxSoma=soma;
+      if (pares<minPares) minPares=pares;
+      if (pares>maxPares) maxPares=pares;
+    }
+    return {minSoma,maxSoma,minPares,maxPares};
+  }
+
+  // pontua um jogo somando a frequência (FREQ10, o mesmo dado do Rastreador de
+  // Tendências) de cada dezena que ele contém — usado só pra ORDENAR a lista,
+  // sem tirar nem trocar nenhuma combinação: continuam sendo todas as apostas
+  // possíveis do pool, só que mostradas das mais "quentes" pras mais "frias".
+  function scoreGameByFreq(g){
+    return g.reduce((s,n)=> s + (FREQ10[n]||0), 0);
+  }
+  function ordenarPorFrequencia(games){
+    return games.slice().sort((a,b)=> scoreGameByFreq(b) - scoreGameByFreq(a));
+  }
+
+  function renderResult(container, gamesOriginal, prizeBody, nomeFerramenta){
+    nomeFerramenta = nomeFerramenta || "Fechamentos Lotofácil";
+    const games = ordenarPorFrequencia(gamesOriginal);
+    if (!games.length){
+      container.innerHTML = "<p style='color:var(--ink-soft)'>Não foi possível gerar apostas com essa seleção.</p>";
+      container.classList.remove("empty");
+      if (prizeBody) prizeBody.innerHTML = "";
+      return;
+    }
+    const counts = simulate(games);
+    if (prizeBody){
+      let rows = "";
+      for (const pts of [15,14,13,12,11]){
+        const qtd = counts[pts];
+        const premio = PREMIO_REF[pts];
+        const valorTxt = premio===null
+          ? (qtd>0 ? "rateio" : "R$ 0,00")
+          : ("R$ " + (qtd*premio).toLocaleString("pt-BR", {minimumFractionDigits:2}));
+        rows += `<tr><td>${pts} pontos</td><td>${qtd}</td><td>${valorTxt}</td></tr>`;
+      }
+      prizeBody.innerHTML = rows;
+    }
+    const amostra = sampleGames(games, 40);
+    const resumo = gamesSummary(games);
+    const sample = renderSampleRows(amostra, true);
+    container.classList.remove("empty");
+    container.innerHTML = `
+      <p style="margin:0 0 10px; font-size:14px;"><b>${games.length.toLocaleString("pt-BR")}</b> apostas de 15 números geradas
+        · custo de referência: <b>R$ ${(games.length*VALOR_APOSTA).toLocaleString("pt-BR")}</b> (R$ ${VALOR_APOSTA},00 por jogo)</p>
+      <div class="note" style="margin-bottom:4px;">Soma das dezenas entre ${resumo.minSoma} e ${resumo.maxSoma} · entre ${resumo.minPares} e ${resumo.maxPares} números pares por jogo.</div>
+      <div class="note" style="margin-bottom:8px;">Simulação contra o concurso ${ULTIMO_CONCURSO} (${HISTORICO[HISTORICO.length-1].data}). Prêmios de 14 e 15 pontos variam por rateio do prêmio acumulado — valores acima são referência.</div>
+      <div class="note" style="margin-bottom:8px;">Lista ordenada dos jogos mais "quentes" pros mais "frios", usando a mesma frequência de dezenas do Rastreador de Tendências (últimos ${HISTORICO.length} concursos). "freq." em cada linha é a soma da frequência das 15 dezenas daquele jogo.</div>
+      <div class="export-actions">
+        <button type="button" class="btn ghost" id="btnExportCsv">⬇️ Exportar CSV (${games.length} jogos)</button>
+        <button type="button" class="btn ghost" id="btnExportPdf">🖨️ Imprimir / Salvar PDF</button>
+      </div>
+      <div class="sample-wrap">${sample}</div>
+      <div class="note" style="margin-top:8px;">Os números em <span style="color:var(--mark); font-weight:700;">destaque</span> são os que mudam de um jogo pro outro na amostra abaixo. Num fechamento, a maioria das dezenas se repete entre as apostas de propósito — é isso que garante a cobertura de todas as combinações do pool escolhido.</div>
+      <div class="note">📤 em cada linha compartilha aquele jogo específico no WhatsApp.</div>
+      ${games.length>amostra.length ? `<div class="note">amostra de ${amostra.length} apostas espalhadas entre as ${games.length.toLocaleString("pt-BR")} geradas (não só as primeiras) — o CSV e o PDF trazem todas.</div>` : ""}
+    `;
+    ativarBotoesCompartilhar(container);
+    const csvBtn = container.querySelector("#btnExportCsv");
+    const pdfBtn = container.querySelector("#btnExportPdf");
+    if (csvBtn) csvBtn.addEventListener("click", ()=>{
+      const nomeArquivo = `${nomeFerramenta.toLowerCase().replace(/[^a-z0-9]+/g,"-")}-${games.length}-jogos.csv`;
+      baixarCSV(games, nomeArquivo);
+    });
+    if (pdfBtn) pdfBtn.addEventListener("click", ()=> imprimirJogos(games, nomeFerramenta));
+  }
+
+
+  /* ---------------- header: bolas do último sorteio ---------------- */
+  function renderBallsInto(wrapId, numbers){
+    const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    numbers.forEach(n=>{
+      const b = document.createElement("div");
+      b.className = "ball";
+      b.textContent = pad2(n);
+      wrap.appendChild(b);
+    });
+  }
+
+  function atualizarBlocosUltimoConcurso(){
+    const hdrConcursoEl = document.getElementById("hdrConcurso");
+    const hdrDataEl = document.getElementById("hdrData");
+    if (hdrConcursoEl) hdrConcursoEl.textContent = ULTIMO_CONCURSO;
+    if (hdrDataEl) hdrDataEl.textContent = HISTORICO[HISTORICO.length-1].data;
+    renderBallsInto("lastDrawBalls", ULTIMO_SORTEIO);
+    ["erre7","erre4","3x3","erre5","top20"].forEach(key=>{
+      const concursoEl = document.getElementById("rlConcurso-"+key);
+      const dataEl = document.getElementById("rlData-"+key);
+      if (concursoEl) concursoEl.textContent = ULTIMO_CONCURSO;
+      if (dataEl) dataEl.textContent = HISTORICO[HISTORICO.length-1].data;
+      renderBallsInto("rlBalls-"+key, ULTIMO_SORTEIO);
+    });
+    updateFooter();
+  }
+
+  /* ---------------- checagem automática de novo concurso ---------------- */
+  const AUTO_REFRESH_INTERVAL_MS = 5 * 60 * 1000; // a cada 5 minutos
+
+  function mostrarToast(msg){
+    const toast = document.getElementById("novoConcursoToast");
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(()=> toast.classList.remove("show"), 6000);
+  }
+
+  async function checarNovoConcurso(){
+    try{
+      const resp = await fetch(`${API_LOTERIA_BASE}/latest`);
+      if (!resp.ok) return;
+      const json = await resp.json();
+      if (!json.concurso || json.concurso === ULTIMO_CONCURSO) return; // sem novidade
+
+      const ok = await carregarUltimosResultados(QTD_HISTORICO);
+      if (!ok) return;
+
+      atualizarBlocosUltimoConcurso();
+      if (currentPanelId === "panel-rastreador" && rastreadorRenderAll) rastreadorRenderAll();
+
+      mostrarToast(`Novo concurso disponível: ${ULTIMO_CONCURSO} (${HISTORICO[HISTORICO.length-1].data}). Dados atualizados.`);
+    } catch(e){
+      // silencioso: sem internet ou API fora do ar agora — tenta de novo no próximo ciclo
+    }
+  }
+
+  function iniciarChecagemAutomatica(){
+    setInterval(checarNovoConcurso, AUTO_REFRESH_INTERVAL_MS);
+  }
+
+  /* ---------------- header / menu por ferramenta ---------------- */
+  const panels = document.querySelectorAll("section.panel");
+
+  const PANELS_INFO = {
+    "panel-inicio":     {title:"Fechamentos Lotofácil",              color:"#2A2C33", action:null,     ajuda:true, salvos:false, resultados:false},
+    "panel-erre7":      {title:"Fechamento Intermediário",           color:"#8A5A34", action:"Criar jogo", ajuda:true,  salvos:true,  resultados:true},
+    "panel-erre4":      {title:"Fechamento Reduzido",                 color:"#3E6B6E", action:"Criar jogo", ajuda:true,  salvos:true,  resultados:true},
+    "panel-3x3":        {title:"Lotofácil 3x3",                       color:"#3E5C82", action:"Criar jogo", ajuda:true,  salvos:true,  resultados:true},
+    "panel-erre5":      {title:"Lotofácil Erre 5",                    color:"#5B7A54", action:"Criar jogo", ajuda:true,  salvos:true,  resultados:true},
+    "panel-top20":      {title:"Lotofácil Top 20",                    color:"#5A5C82", action:"Grupos",    ajuda:true,  salvos:false, resultados:true},
+    "panel-rastreador": {title:"Rastreador Tendências Lotofácil",     color:"#8B4A42", action:"Rastreador", ajuda:true, salvos:false, resultados:true},
+    "panel-salvos":      {title:"Jogos salvos",                       color:"#2A2C33", action:null,        ajuda:true, salvos:false, resultados:false},
+    "panel-jogo-detalhe":{title:"Jogo salvo",                         color:"#2A2C33", action:null,        ajuda:true, salvos:false, resultados:false},
+  };
+
+  const appHeader      = document.getElementById("appHeader");
+  const headerTitle    = document.getElementById("headerTitle");
+  const drawStrip       = document.getElementById("drawStrip");
+  const menuAction      = document.getElementById("menuAction");
+  const menuSalvos      = document.getElementById("menuSalvos");
+  const menuAjuda       = document.getElementById("menuAjuda");
+  const menuInicio      = document.getElementById("menuInicio");
+  const menuResultados  = document.getElementById("menuResultados");
+  const appMenu         = document.getElementById("appMenu");
+  const hamburgerBtn    = document.getElementById("hamburgerBtn");
+  const produtosToggle  = document.getElementById("produtosToggle");
+  const produtosPanel   = document.getElementById("produtosPanel");
+  const contaToggle     = document.getElementById("contaToggle");
+  const contaPanel      = document.getElementById("contaPanel");
+
+  function closeAllMenus(){
+    appMenu.classList.remove("open");
+    hamburgerBtn.setAttribute("aria-expanded","false");
+    produtosPanel.classList.remove("open");
+    contaPanel.classList.remove("open");
+  }
+
+  let currentPanelId = "panel-inicio";
+  let rastreadorRenderAll = null; // preenchido dentro do IIFE do rastreador, usado pela checagem automática de novo concurso
+
+  function activatePanel(id, opts){
+    opts = opts || {};
+    panels.forEach(p=>p.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+
+    const info = PANELS_INFO[id];
+    appHeader.style.background = info.color;
+    headerTitle.textContent = info.title;
+
+    if (info.action){
+      menuAction.style.display = "block";
+      menuAction.textContent = info.action;
+    } else {
+      menuAction.style.display = "none";
+    }
+    menuSalvos.style.display     = info.salvos     ? "block" : "none";
+    menuAjuda.style.display      = info.ajuda      ? "block" : "none";
+    menuResultados.style.display = info.resultados ? "block" : "none";
+
+    if (drawStrip) drawStrip.style.display = (id === "panel-rastreador") ? "block" : "none";
+
+    produtosPanel.querySelectorAll("button").forEach(b=>{
+      b.classList.toggle("current", b.dataset.target === id);
+    });
+
+    if (!opts.skipScroll) window.scrollTo({top:0, behavior:"smooth"});
+    currentPanelId = id;
+    closeAllMenus();
+
+    if (id === "panel-salvos" && typeof renderSavedList === "function") renderSavedList();
+  }
+
+  // troca de ferramenta pelo "Meus produtos" e pela lista da página inicial
+  document.querySelectorAll('[data-target]').forEach(btn=>{
+    btn.addEventListener("click", ()=> activatePanel(btn.dataset.target));
+  });
+
+  // hambúrguer abre/fecha o menu
+  hamburgerBtn.addEventListener("click", ()=>{
+    const willOpen = !appMenu.classList.contains("open");
+    appMenu.classList.toggle("open", willOpen);
+    hamburgerBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+    if (!willOpen){ produtosPanel.classList.remove("open"); contaPanel.classList.remove("open"); }
+  });
+
+  // modo escuro
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  const themeToggleIcon = document.getElementById("themeToggleIcon");
+  function atualizarIconeTema(){
+    themeToggleIcon.textContent = document.body.classList.contains("dark-theme") ? "☀️" : "🌙";
+  }
+  atualizarIconeTema();
+  themeToggleBtn.addEventListener("click", ()=>{
+    const escuro = document.body.classList.toggle("dark-theme");
+    atualizarIconeTema();
+    try{ localStorage.setItem("lotofacil-theme", escuro ? "dark" : "light"); }
+    catch(e){ /* localStorage indisponível — só não persiste entre sessões */ }
+  });
+
+  // dropdowns "Meus produtos" e "Minha conta"
+  produtosToggle.addEventListener("click", ()=>{
+    contaPanel.classList.remove("open");
+    produtosPanel.classList.toggle("open");
+  });
+  contaToggle.addEventListener("click", ()=>{
+    produtosPanel.classList.remove("open");
+    contaPanel.classList.toggle("open");
+  });
+
+  // "Início": leva para a página inicial com a lista de produtos
+  menuInicio.addEventListener("click", ()=> activatePanel("panel-inicio"));
+
+  // item de ação (Criar jogo / Grupos / Rastreador): fecha o menu e sobe ao topo da ferramenta atual
+  menuAction.addEventListener("click", ()=>{
+    window.scrollTo({top:0, behavior:"smooth"});
+    closeAllMenus();
+  });
+
+  // "Resultados": rola até a área de resultado/rastreador/grupos da ferramenta ativa
+  menuResultados.addEventListener("click", ()=>{
+    const activePanel = document.querySelector("section.panel.active");
+    const target = activePanel.querySelector(".result-box, .heat-strip, .groups-list");
+    if (target) target.scrollIntoView({behavior:"smooth", block:"start"});
+    closeAllMenus();
+  });
+
+  // "Jogos salvos": leva para a lista de jogos salvos
+  menuSalvos.addEventListener("click", ()=> activatePanel("panel-salvos"));
+  // "Ajuda": abre o modal de ajuda da ferramenta atual
+  menuAjuda.addEventListener("click", ()=>{
+    closeAllMenus();
+    abrirModalAjuda();
+  });
+  document.getElementById("btnSenha").addEventListener("click", ()=>{
+    closeAllMenus();
+    if (!window.__lotofacilAuth) return;
+    abrirModalSenha();
+  });
+  document.getElementById("btnSair").addEventListener("click", async ()=>{
+    closeAllMenus();
+    if (window.__lotofacilAuth) await window.__lotofacilAuth.signOut(); // já recarrega a página
+  });
+
+  /* ---------------- modal: alterar senha ---------------- */
+  const senhaModalOverlay = document.getElementById("senhaModalOverlay");
+  const senhaModalForm = document.getElementById("senhaModalForm");
+  const senhaModalNova = document.getElementById("senhaModalNova");
+  const senhaModalConfirma = document.getElementById("senhaModalConfirma");
+  const senhaModalErro = document.getElementById("senhaModalErro");
+  const senhaModalSalvar = document.getElementById("senhaModalSalvar");
+  const senhaModalCancelar = document.getElementById("senhaModalCancelar");
+
+  function abrirModalSenha(){
+    senhaModalForm.reset();
+    senhaModalErro.textContent = "";
+    senhaModalOverlay.classList.add("open");
+    setTimeout(()=> senhaModalNova.focus(), 30);
+  }
+  function fecharModalSenha(){
+    senhaModalOverlay.classList.remove("open");
+  }
+  senhaModalCancelar.addEventListener("click", fecharModalSenha);
+  senhaModalOverlay.addEventListener("click", (e)=>{
+    if (e.target === senhaModalOverlay) fecharModalSenha();
+  });
+  document.addEventListener("keydown", (e)=>{
+    if (e.key === "Escape" && senhaModalOverlay.classList.contains("open")) fecharModalSenha();
+  });
+  senhaModalForm.addEventListener("submit", async (e)=>{
+    e.preventDefault();
+    senhaModalErro.textContent = "";
+    const nova = senhaModalNova.value;
+    const confirma = senhaModalConfirma.value;
+    if (nova.length < 6){ senhaModalErro.textContent = "A senha precisa ter pelo menos 6 caracteres."; return; }
+    if (nova !== confirma){ senhaModalErro.textContent = "As senhas não são iguais. Digite a mesma senha nos dois campos."; return; }
+    senhaModalSalvar.disabled = true;
+    senhaModalSalvar.textContent = "Salvando…";
+    const { error } = await window.__lotofacilAuth.supabaseClient.auth.updateUser({ password: nova });
+    senhaModalSalvar.disabled = false;
+    senhaModalSalvar.textContent = "Salvar nova senha";
+    if (error){
+      senhaModalErro.textContent = "Não foi possível alterar a senha: " + error.message;
+      return;
+    }
+    fecharModalSenha();
+    alert("Senha alterada com sucesso.");
+  });
+
+  /* ---------------- modal: ajuda ---------------- */
+  // TROQUE pelo seu e-mail de contato real:
+  const CONTACT_EMAIL = "seuemail@exemplo.com";
+
+  const HELP_CONTENT = {
+    "panel-inicio": {
+      titulo: "Como usar o Fechamentos Lotofácil",
+      html: `
+        <p>Escolha uma das ferramentas na lista para montar, fechar ou conferir seus jogos da Lotofácil.</p>
+        <h4>Ferramentas disponíveis</h4>
+        <ul>
+          <li><b>Fechamento Intermediário</b> — exclui 7 números e gera todas as apostas de 15 com as 18 restantes.</li>
+          <li><b>Fechamento Reduzido</b> — exclui 4 ímpares e fecha um jogo maior com as 21 dezenas restantes.</li>
+          <li><b>Lotofácil 3x3</b> — fixa 6 pares e 6 ímpares e completa com as 3 dezenas finais.</li>
+          <li><b>Lotofácil Erre 5</b> — exclui 5 números e gera o fechamento com as 20 restantes.</li>
+          <li><b>Lotofácil Top 20</b> — grupos prontos para conferir contra o último concurso.</li>
+          <li><b>Rastreador de Tendências</b> — frequência das dezenas, do mais quente ao mais frio.</li>
+        </ul>
+      `
+    },
+    "panel-erre7": {
+      titulo: "Ajuda — Fechamento Intermediário",
+      html: `
+        <p>Essa ferramenta exclui 7 números da roda e gera todas as apostas de 15 números possíveis com as 18 dezenas restantes.</p>
+        <h4>Como usar</h4>
+        <ol>
+          <li>Toque nos números que você quer <b>excluir</b> (são 7 no total).</li>
+          <li>Depois de escolher os 7, toque em "Gerar apostas".</li>
+          <li>Confira a simulação de pontos contra o último concurso e, se quiser, salve o jogo.</li>
+        </ol>
+      `
+    },
+    "panel-erre4": {
+      titulo: "Ajuda — Fechamento Reduzido",
+      html: `
+        <p>Essa ferramenta exclui 4 números <b>ímpares</b> e fecha um jogo maior com as 21 dezenas restantes.</p>
+        <h4>Como usar</h4>
+        <ol>
+          <li>Toque em 4 números ímpares para excluir da roda.</li>
+          <li>Toque em "Gerar apostas" para ver as combinações e a simulação de pontos.</li>
+          <li>Salve o jogo se quiser acessá-lo depois em "Jogos salvos".</li>
+        </ol>
+      `
+    },
+    "panel-3x3": {
+      titulo: "Ajuda — Lotofácil 3x3",
+      html: `
+        <p>Você fixa 6 números pares e 6 ímpares; a ferramenta completa cada aposta com as 3 dezenas finais.</p>
+        <h4>Como usar</h4>
+        <ol>
+          <li>Escolha 6 números pares.</li>
+          <li>Escolha 6 números ímpares.</li>
+          <li>Toque em "Gerar apostas" para ver todas as combinações possíveis com os 3 números restantes.</li>
+        </ol>
+      `
+    },
+    "panel-erre5": {
+      titulo: "Ajuda — Lotofácil Erre 5",
+      html: `
+        <p>Essa ferramenta exclui 5 números da roda e gera o fechamento com as 20 dezenas restantes.</p>
+        <h4>Como usar</h4>
+        <ol>
+          <li>Toque nos 5 números que você quer excluir.</li>
+          <li>Toque em "Gerar apostas" para ver as combinações e a simulação de pontos.</li>
+        </ol>
+      `
+    },
+    "panel-top20": {
+      titulo: "Ajuda — Lotofácil Top 20",
+      html: `
+        <p>São 15 grupos de 15 dezenas, todos montados só com as 20 dezenas que mais saíram nos concursos recentes — a frequência real é recalculada toda vez que a página carrega.</p>
+        <h4>Como usar</h4>
+        <ol>
+          <li>Veja quais são as 20 dezenas mais quentes logo acima da lista de grupos.</li>
+          <li>Toque em "Conferir resultados" em qualquer grupo para ver quantos pontos ele faria no último concurso.</li>
+          <li>Toque e segure um número do grupo para ver quantas vezes ele saiu no período usado.</li>
+        </ol>
+      `
+    },
+    "panel-rastreador": {
+      titulo: "Ajuda — Rastreador de Tendências",
+      html: `
+        <p>Mostra a frequência de cada dezena nos últimos concursos, do mais quente (saiu mais vezes) ao mais frio (saiu menos vezes).</p>
+        <h4>Como usar</h4>
+        <ol>
+          <li>Escolha quantos concursos entram na conta: 10, 20, 30, 40, 50 ou 100.</li>
+          <li>A lista de frequência e o histórico de concursos são atualizados com dados reais buscados na hora.</li>
+        </ol>
+      `
+    },
+    "panel-salvos": {
+      titulo: "Ajuda — Jogos salvos",
+      html: `<p>Aqui ficam os jogos que você salvou em qualquer uma das ferramentas. Toque num jogo salvo para ver os números e conferir contra outros concursos.</p>`
+    },
+    "panel-jogo-detalhe": {
+      titulo: "Ajuda — Jogo salvo",
+      html: `<p>Escolha um concurso na lista e toque em "Conferir" para ver quantos pontos esse jogo salvo faria.</p>`
+    }
+  };
+
+  const ajudaModalOverlay = document.getElementById("ajudaModalOverlay");
+  const ajudaModalTitulo  = document.getElementById("ajudaModalTitulo");
+  const ajudaModalCorpo   = document.getElementById("ajudaModalCorpo");
+  const ajudaModalEmail   = document.getElementById("ajudaModalEmail");
+  const ajudaModalFechar  = document.getElementById("ajudaModalFechar");
+
+  ajudaModalEmail.textContent = CONTACT_EMAIL;
+  ajudaModalEmail.href = "mailto:" + CONTACT_EMAIL;
+
+  function abrirModalAjuda(){
+    const conteudo = HELP_CONTENT[currentPanelId] || HELP_CONTENT["panel-inicio"];
+    ajudaModalTitulo.textContent = conteudo.titulo;
+    ajudaModalCorpo.innerHTML = conteudo.html;
+    ajudaModalOverlay.classList.add("open");
+  }
+  function fecharModalAjuda(){
+    ajudaModalOverlay.classList.remove("open");
+  }
+  ajudaModalFechar.addEventListener("click", fecharModalAjuda);
+  ajudaModalOverlay.addEventListener("click", (e)=>{
+    if (e.target === ajudaModalOverlay) fecharModalAjuda();
+  });
+  document.addEventListener("keydown", (e)=>{
+    if (e.key === "Escape" && ajudaModalOverlay.classList.contains("open")) fecharModalAjuda();
+  });
+
+  // estado inicial
+  activatePanel("panel-inicio", {skipScroll:true});
+
+  /* ---------------- ferramenta genérica de exclusão ---------------- */
+  function buildExclusionTool(gridId, statusId, resultId, poolNumbers, need, wordFor, toolKey){
+    const grid = document.getElementById(gridId);
+    const status = document.getElementById(statusId);
+    const resultEl = document.getElementById(resultId);
+    const btn = document.getElementById("btn-"+toolKey);
+    const prizeBody = document.getElementById("prizeBody-"+toolKey);
+    const overlay = document.getElementById("overlay-"+toolKey);
+    const saveBtn = document.getElementById("save-"+toolKey);
+    const nameInput = document.getElementById("name-"+toolKey);
+    const selected = [];
+
+    function resetOutput(){
+      overlay.style.display = "flex";
+      resultEl.classList.add("empty");
+      resultEl.innerHTML = "Depois de gerar as apostas, a lista completa aparece aqui.";
+      prizeBody.innerHTML = `
+        <tr><td>15 pontos</td><td>—</td><td>—</td></tr>
+        <tr><td>14 pontos</td><td>—</td><td>—</td></tr>
+        <tr><td>13 pontos</td><td>—</td><td>—</td></tr>
+        <tr><td>12 pontos</td><td>—</td><td>—</td></tr>
+        <tr><td>11 pontos</td><td>—</td><td>—</td></tr>`;
+      saveBtn.disabled = true;
+      saveBtn.textContent = "💾 Salvar jogo";
+      saveBtn.classList.remove("saved");
+    }
+
+    poolNumbers.forEach(n=>{
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "num-btn";
+      b.textContent = pad2(n);
+      b.dataset.n = n;
+      b.addEventListener("click", ()=>{
+        const idx = selected.indexOf(n);
+        if (idx>-1){
+          selected.splice(idx,1);
+          b.classList.remove("sel");
+        } else {
+          if (selected.length >= need) return;
+          selected.push(n);
+          b.classList.add("sel");
+        }
+        updateStatus();
+      });
+      grid.appendChild(b);
+    });
+
+    function updateStatus(){
+      btn.disabled = selected.length !== need;
+      resetOutput();
+      if (selected.length < need){
+        status.innerHTML = `Escolha <b>${need - selected.length}</b> ${wordFor} para completar a exclusão (${selected.length}/${need}).`;
+      } else {
+        status.innerHTML = `Exclusão completa: <b>${selected.map(pad2).join(", ")}</b>. Toque em "Gerar apostas" para simular com as ${poolNumbers.length-need} dezenas restantes.`;
+      }
+    }
+
+    btn.addEventListener("click", ()=>{
+      const remaining = poolNumbers.filter(n => !selected.includes(n));
+      const games = generateGames(remaining, 15);
+      overlay.style.display = "none";
+      const nomeFerramenta = (PANELS_INFO["panel-"+toolKey] && PANELS_INFO["panel-"+toolKey].title) || "Fechamentos Lotofácil";
+      renderResult(resultEl, games, prizeBody, nomeFerramenta);
+      saveBtn.disabled = false;
+    });
+
+    saveBtn.addEventListener("click", ()=>{
+      saveGame(toolKey, PANELS_INFO["panel-"+toolKey].title, {excluded: selected.slice()}, nameInput.value);
+      saveBtn.textContent = "✓ Jogo salvo";
+      saveBtn.classList.add("saved");
+      saveBtn.disabled = true;
+    });
+
+    updateStatus();
+  }
+
+  const TODAS = Array.from({length:25}, (_,i)=>i+1);
+  const IMPARES = TODAS.filter(n=>n%2!==0);
+  const PARES = TODAS.filter(n=>n%2===0);
+
+  /* ---------------- jogos salvos (localStorage) ---------------- */
+  const SAVE_KEY = "lotofacil_jogos_salvos";
+
+  function loadSaved(){
+    try{ return JSON.parse(localStorage.getItem(SAVE_KEY)) || []; }catch(e){ return []; }
+  }
+  function persistSaved(list){
+    try{ localStorage.setItem(SAVE_KEY, JSON.stringify(list)); }catch(e){}
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+  function saveGame(toolKey, toolLabel, params, name){
+    const list = loadSaved();
+    list.unshift({
+      id: Date.now()+"-"+Math.random().toString(36).slice(2,7),
+      toolKey, toolLabel, params,
+      name: (name||"").trim(),
+      savedAt: new Date().toISOString()
+    });
+    persistSaved(list);
+  }
+  function gamesFromParams(toolKey, params){
+    if (toolKey === "3x3"){
+      const fixos = params.fixos;
+      const restante = TODAS.filter(n=>!fixos.includes(n));
+      const combosFinais = generateGames(restante, 3);
+      return combosFinais.map(extra=>fixos.concat(extra).sort((a,b)=>a-b));
+    }
+    const poolMap = {erre7:TODAS, erre4:IMPARES, erre5:TODAS};
+    const pool = poolMap[toolKey] || TODAS;
+    const remaining = pool.filter(n=>!params.excluded.includes(n));
+    return generateGames(remaining, 15);
+  }
+  function fmtDateTime(iso){
+    const d = new Date(iso);
+    const p = x => String(x).padStart(2,"0");
+    return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  }
+  function renderSavedList(){
+    const wrap = document.getElementById("savedList");
+    if (!wrap) return;
+    const list = loadSaved();
+    if (!list.length){
+      wrap.innerHTML = `<p class="empty-note">Nenhum jogo salvo ainda. Gere apostas em qualquer ferramenta e toque em "Salvar jogo".</p>`;
+      return;
+    }
+    wrap.innerHTML = "";
+    list.forEach(item=>{
+      const row = document.createElement("div");
+      row.className = "saved-item";
+      const displayName = item.name ? escapeHtml(item.name) : escapeHtml(item.toolLabel);
+      const subtitle = item.name
+        ? `${escapeHtml(item.toolLabel)} · salvo em ${fmtDateTime(item.savedAt)}`
+        : `Jogo salvo em ${fmtDateTime(item.savedAt)}`;
+      row.innerHTML = `
+        <div class="si-info">
+          <span class="si-tool">${displayName}</span>
+          <span class="si-date">${subtitle}</span>
+        </div>
+        <div style="display:flex; align-items:center;">
+          <button class="si-edit" type="button" title="Renomear jogo">✎</button>
+          <button class="si-del" type="button" title="Excluir jogo salvo">✕</button>
+        </div>`;
+      row.addEventListener("click", (e)=>{
+        if (e.target.closest(".si-del") || e.target.closest(".si-edit")) return;
+        openSavedGame(item.id);
+      });
+      row.querySelector(".si-del").addEventListener("click", (e)=>{
+        e.stopPropagation();
+        persistSaved(loadSaved().filter(x=>x.id!==item.id));
+        renderSavedList();
+      });
+      row.querySelector(".si-edit").addEventListener("click", (e)=>{
+        e.stopPropagation();
+        renameSavedGame(item.id);
+      });
+      wrap.appendChild(row);
+    });
+  }
+
+  function renameSavedGame(id){
+    const list = loadSaved();
+    const item = list.find(x=>x.id===id);
+    if (!item) return;
+    const novoNome = prompt("Nome do jogo:", item.name || item.toolLabel);
+    if (novoNome === null) return;
+    item.name = novoNome.trim();
+    persistSaved(list);
+    renderSavedList();
+    if (currentSavedGame && currentSavedGame.id === id){
+      currentSavedGame = item;
+      updateJdNameDisplay(item);
+    }
+  }
+
+  function updateJdNameDisplay(item){
+    const displayName = item.name || item.toolLabel;
+    document.getElementById("jdTitle").textContent = displayName;
+    document.getElementById("jdSavedAt").innerHTML =
+      (item.name ? `${escapeHtml(item.toolLabel)} · ` : `<b>Jogo</b> `) + `salvo em ${fmtDateTime(item.savedAt)}`;
+  }
+
+  let currentSavedGame = null;
+
+  function openSavedGame(id){
+    const item = loadSaved().find(x=>x.id===id);
+    if (!item) return;
+    currentSavedGame = item;
+
+    document.getElementById("jdEyebrow").textContent = item.toolLabel;
+    updateJdNameDisplay(item);
+
+    const sel = document.getElementById("jdConcursoSelect");
+    sel.innerHTML = `<option value="">Selecione um concurso para conferir</option>` +
+      HISTORICO.slice().reverse().map(h=>`<option value="${h.c}">Concurso ${h.c} — ${h.data}</option>`).join("");
+    sel.value = "";
+
+    const resultEl = document.getElementById("jdResult");
+    resultEl.classList.add("empty");
+    resultEl.innerHTML = "Selecione um concurso e toque em \"Conferir\" para ver os acertos.";
+
+    activatePanel("panel-jogo-detalhe");
+    const toolInfo = PANELS_INFO["panel-"+item.toolKey];
+    if (toolInfo){
+      appHeader.style.background = toolInfo.color;
+      headerTitle.textContent = item.toolLabel;
+    }
+  }
+
+  document.getElementById("jdConferirBtn").addEventListener("click", ()=>{
+    const resultEl = document.getElementById("jdResult");
+    if (!currentSavedGame){
+      resultEl.classList.add("empty");
+      resultEl.innerHTML = "Volte aos jogos salvos e escolha um jogo.";
+      return;
+    }
+    const concursoId = parseInt(document.getElementById("jdConcursoSelect").value, 10);
+    if (!concursoId){
+      resultEl.classList.add("empty");
+      resultEl.innerHTML = "Selecione um concurso para conferir.";
+      return;
+    }
+    const concurso = HISTORICO.find(h=>h.c===concursoId);
+    const games = gamesFromParams(currentSavedGame.toolKey, currentSavedGame.params);
+    const winSet = new Set(concurso.n);
+    const counts = {11:0,12:0,13:0,14:0,15:0};
+    games.forEach(g=>{
+      let hits = 0;
+      g.forEach(n=>{ if (winSet.has(n)) hits++; });
+      if (hits>=11 && hits<=15) counts[hits]++;
+    });
+    const rows = [15,14,13,12,11].map(pts=>`<tr><td>${pts} pontos</td><td>${counts[pts]}</td></tr>`).join("");
+    const amostra = sampleGames(games, 40);
+    const sample = renderSampleRows(amostra);
+    resultEl.classList.remove("empty");
+    resultEl.innerHTML = `
+      <p style="margin:0 0 10px; font-size:14px;">Conferido contra o concurso <b>${concurso.c}</b> (${concurso.data}).</p>
+      <table class="prize-table" style="max-width:340px;">
+        <thead><tr><th>Acerto</th><th>Quantidade</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="export-actions">
+        <button type="button" class="btn ghost" id="btnExportCsv">⬇️ Exportar CSV (${games.length} jogos)</button>
+        <button type="button" class="btn ghost" id="btnExportPdf">🖨️ Imprimir / Salvar PDF</button>
+      </div>
+      <div class="sample-wrap" style="margin-top:14px;">${sample}</div>
+      <div class="note">📤 em cada linha compartilha aquele jogo específico no WhatsApp.</div>
+      ${games.length>amostra.length ? `<div class="note">amostra de ${amostra.length} apostas espalhadas entre as ${games.length.toLocaleString("pt-BR")} geradas — o CSV e o PDF trazem todas.</div>` : ""}
+    `;
+    ativarBotoesCompartilhar(resultEl);
+    const csvBtn = resultEl.querySelector("#btnExportCsv");
+    const pdfBtn = resultEl.querySelector("#btnExportPdf");
+    const nomeFerramenta = currentSavedGame.toolLabel || "Fechamentos Lotofácil";
+    if (csvBtn) csvBtn.addEventListener("click", ()=>{
+      const nomeArquivo = `${nomeFerramenta.toLowerCase().replace(/[^a-z0-9]+/g,"-")}-${games.length}-jogos.csv`;
+      baixarCSV(games, nomeArquivo);
+    });
+    if (pdfBtn) pdfBtn.addEventListener("click", ()=> imprimirJogos(games, nomeFerramenta));
+  });
+
+  document.getElementById("jdVoltarBtn").addEventListener("click", ()=> activatePanel("panel-salvos"));
+  document.getElementById("jdRenameBtn").addEventListener("click", ()=>{
+    if (currentSavedGame) renameSavedGame(currentSavedGame.id);
+  });
+
+  (async function(){
+    await carregarUltimosResultados(); // busca o concurso mais recente na API; mantém os dados de referência se falhar
+
+    atualizarBlocosUltimoConcurso();
+    iniciarChecagemAutomatica();
+
+    buildExclusionTool("grid-erre7","status-erre7","result-erre7", TODAS, 7, "números", "erre7");
+    buildExclusionTool("grid-erre4","status-erre4","result-erre4", IMPARES, 4, "números ímpares", "erre4");
+    buildExclusionTool("grid-erre5","status-erre5","result-erre5", TODAS, 5, "números", "erre5");
+
+  /* ---------------- 3x3 ---------------- */
+  (function(){
+    const gridPares = document.getElementById("grid-pares");
+    const gridImpares = document.getElementById("grid-impares");
+    const statusPares = document.getElementById("status-pares");
+    const statusImpares = document.getElementById("status-impares");
+    const stepPares = document.getElementById("step-pares");
+    const stepImpares = document.getElementById("step-impares");
+    const resultEl = document.getElementById("result-3x3");
+    const btnVoltar = document.getElementById("btn-voltar-pares");
+    const btnGerar = document.getElementById("btn-3x3");
+    const prizeBody = document.getElementById("prizeBody-3x3");
+    const overlay = document.getElementById("overlay-3x3");
+    const saveBtn = document.getElementById("save-3x3");
+    const nameInput = document.getElementById("name-3x3");
+
+    const selPares = [];
+    const selImpares = [];
+
+    function resetOutput(){
+      btnGerar.disabled = true;
+      overlay.style.display = "flex";
+      resultEl.classList.add("empty");
+      resultEl.innerHTML = "Complete as duas etapas para ver as apostas geradas.";
+      prizeBody.innerHTML = `
+        <tr><td>15 pontos</td><td>—</td><td>—</td></tr>
+        <tr><td>14 pontos</td><td>—</td><td>—</td></tr>
+        <tr><td>13 pontos</td><td>—</td><td>—</td></tr>
+        <tr><td>12 pontos</td><td>—</td><td>—</td></tr>
+        <tr><td>11 pontos</td><td>—</td><td>—</td></tr>`;
+      saveBtn.disabled = true;
+      saveBtn.textContent = "💾 Salvar jogo";
+      saveBtn.classList.remove("saved");
+    }
+
+    PARES.forEach(n=>{
+      const b = document.createElement("button");
+      b.type="button"; b.className="num-btn"; b.textContent = pad2(n);
+      b.addEventListener("click", ()=>{
+        const idx = selPares.indexOf(n);
+        if (idx>-1){ selPares.splice(idx,1); b.classList.remove("sel"); }
+        else{ if (selPares.length>=6) return; selPares.push(n); b.classList.add("sel"); }
+        resetOutput();
+        if (selPares.length < 6){
+          statusPares.innerHTML = `Escolha <b>${6-selPares.length}</b> pares (${selPares.length}/6).`;
+        } else {
+          statusPares.innerHTML = `Pares escolhidos: <b>${selPares.map(pad2).join(", ")}</b>. Avançando para os ímpares…`;
+          setTimeout(()=>{
+            stepPares.classList.remove("active");
+            stepImpares.classList.add("active");
+          }, 350);
+        }
+      });
+      gridPares.appendChild(b);
+    });
+
+    IMPARES.forEach(n=>{
+      const b = document.createElement("button");
+      b.type="button"; b.className="num-btn"; b.textContent = pad2(n);
+      b.addEventListener("click", ()=>{
+        const idx = selImpares.indexOf(n);
+        if (idx>-1){ selImpares.splice(idx,1); b.classList.remove("sel"); }
+        else{ if (selImpares.length>=6) return; selImpares.push(n); b.classList.add("sel"); }
+        updateImpares();
+      });
+      gridImpares.appendChild(b);
+    });
+
+    function updateImpares(){
+      resetOutput();
+      if (selImpares.length < 6){
+        statusImpares.innerHTML = `Escolha <b>${6-selImpares.length}</b> ímpares (${selImpares.length}/6).`;
+      } else {
+        statusImpares.innerHTML = `Ímpares escolhidos: <b>${selImpares.map(pad2).join(", ")}</b>. Toque em "Gerar apostas" para simular.`;
+        btnGerar.disabled = false;
+      }
+    }
+
+    btnGerar.addEventListener("click", ()=>{
+      const fixos = selPares.concat(selImpares);
+      const restante = TODAS.filter(n => !fixos.includes(n));
+      const combosFinais = generateGames(restante, 3);
+      const games = combosFinais.map(extra => fixos.concat(extra).sort((a,b)=>a-b));
+      overlay.style.display = "none";
+      renderResult(resultEl, games, prizeBody, "Lotofácil 3x3");
+      saveBtn.disabled = false;
+    });
+
+    saveBtn.addEventListener("click", ()=>{
+      saveGame("3x3", PANELS_INFO["panel-3x3"].title, {fixos: selPares.concat(selImpares)}, nameInput.value);
+      saveBtn.textContent = "✓ Jogo salvo";
+      saveBtn.classList.add("saved");
+      saveBtn.disabled = true;
+    });
+
+    btnVoltar.addEventListener("click", ()=>{
+      stepImpares.classList.remove("active");
+      stepPares.classList.add("active");
+    });
+
+    resetOutput();
+  })();
+
+  /* ---------------- rastreador ---------------- */
+  (function(){
+    const qtdRow = document.getElementById("qtdRow");
+    const heatStrip = document.getElementById("heatStrip");
+    const histTable = document.getElementById("histTable");
+    const avgRow = document.getElementById("avgRow");
+
+    [10,20,30,40,50,100].forEach(q=>{
+      const b = document.createElement("button");
+      b.type="button";
+      b.textContent = q;
+      b.dataset.qtd = q;
+      if (q===10) b.classList.add("active");
+      b.addEventListener("click", async ()=>{
+        if (b.classList.contains("active")) return;
+        const buttons = [...qtdRow.children];
+        buttons.forEach(x=>{ x.disabled = true; });
+        const original = b.textContent;
+        b.textContent = "…";
+        const ok = await carregarUltimosResultados(q);
+        buttons.forEach(x=>{ x.disabled = false; x.classList.remove("active"); });
+        b.textContent = original;
+        if (ok){
+          b.classList.add("active");
+          renderAll();
+          updateFooter();
+        } else {
+          // falhou: mantém o que já estava carregado
+          const atualBtn = buttons.find(x => parseInt(x.dataset.qtd,10) === QTD_HISTORICO) || qtdRow.children[0];
+          atualBtn.classList.add("active");
+          alert("Não consegui buscar esse número de concursos agora. Tente novamente em instantes.");
+        }
+      });
+      qtdRow.appendChild(b);
+    });
+
+    function renderAll(){
+      // heat strip
+      const entries = Object.entries(FREQ10).map(([n,c])=>[parseInt(n,10), c]).sort((a,b)=> b[1]-a[1]);
+      const max = entries[0][1], min = entries[entries.length-1][1];
+      heatStrip.innerHTML = "";
+      entries.forEach(([n,c])=>{
+        const t = (c - min) / Math.max(1,(max-min)); // 1 = mais quente
+        const r = Math.round(232 - t*(232-43));
+        const g = Math.round(84  + t*(108-84));
+        const bl = Math.round(42 + t*(176-42));
+        const el = document.createElement("div");
+        el.className = "heat-ball";
+        el.style.background = `rgb(${61 + t*(192-61)}, ${98 - t*(98-83)}, ${140 - t*(140-43)})`;
+        el.innerHTML = `<b>${pad2(n)}</b>${c}x`;
+        heatStrip.appendChild(el);
+      });
+
+      // tabela histórica
+      let thead = `<tr><th>Concurso</th>${TODAS.map(n=>`<th>${pad2(n)}</th>`).join("")}<th>Repet.</th><th>Pares</th><th>Ímpares</th></tr>`;
+      let rows = HISTORICO.map(h=>{
+        const nSet = new Set(h.n);
+        const cells = TODAS.map(n=> `<td class="${nSet.has(n)?"x":""}">${nSet.has(n)?pad2(n):""}</td>`).join("");
+        return `<tr><th>${h.c}</th>${cells}<td>${h.rep===null?"–":h.rep}</td><td>${h.pares}</td><td>${h.impares}</td></tr>`;
+      }).join("");
+      histTable.innerHTML = thead + rows;
+
+      // médias
+      const avgPares = (HISTORICO.reduce((s,h)=>s+h.pares,0)/HISTORICO.length).toFixed(2).replace(".",",");
+      const avgImpares = (HISTORICO.reduce((s,h)=>s+h.impares,0)/HISTORICO.length).toFixed(2).replace(".",",");
+      const repVals = HISTORICO.filter(h=>h.rep!==null).map(h=>h.rep);
+      const avgRep = (repVals.reduce((s,v)=>s+v,0)/repVals.length).toFixed(2).replace(".",",");
+      avgRow.innerHTML = `
+        <div>Repetentes médios<b>${avgRep}</b></div>
+        <div>Pares médios<b>${avgPares}</b></div>
+        <div>Ímpares médios<b>${avgImpares}</b></div>
+      `;
+    }
+
+    renderAll();
+    rastreadorRenderAll = renderAll;
+  })();
+
+  /* ---------------- grupos (Lotofácil Top 20) ---------------- */
+  (function(){
+    const list = document.getElementById("groupsList");
+    if (!list) return;
+
+    // ranking real de frequência (mais quente -> mais frio) a partir do FREQ10 carregado da API
+    const ranking = TODAS
+      .map(n => [n, FREQ10[n] || 0])
+      .sort((a,b)=> b[1]-a[1] || a[0]-b[0]); // desconta empate pelo número menor
+
+    const poolTop20 = ranking.slice(0,20).map(e=>e[0]).sort((a,b)=>a-b);
+    const freqByNum = Object.fromEntries(ranking);
+
+    const poolInfo = document.getElementById("top20PoolInfo");
+    if (poolInfo){
+      poolInfo.textContent = `Baseado nos ${HISTORICO.length} concursos mais recentes (até o concurso ${ULTIMO_CONCURSO}). As 20 dezenas mais quentes: ${poolTop20.map(pad2).join(", ")}.`;
+    }
+
+    // gera 15 grupos de 15 dezenas cada, todos formados só com as 20 dezenas mais quentes
+    // (rotação sobre o pool quente em vez das 25 dezenas inteiras)
+    const GROUPS = [];
+    for (let g=1; g<=15; g++){
+      const offset = (g*3) % poolTop20.length;
+      const rotated = poolTop20.slice(offset).concat(poolTop20.slice(0, offset));
+      const numbers = rotated.slice(0,15).sort((a,b)=>a-b);
+      GROUPS.push({id:g, numbers});
+    }
+
+    const winSet = new Set(ULTIMO_SORTEIO);
+
+    GROUPS.forEach(group=>{
+      const card = document.createElement("div");
+      card.className = "group-card";
+
+      const top = document.createElement("div");
+      top.className = "group-card-top";
+      top.innerHTML = `<span class="g-name">G${pad2(group.id)}</span><span class="g-result" id="g-result-${group.id}"></span>`;
+
+      const nums = document.createElement("div");
+      nums.className = "group-numbers";
+      group.numbers.forEach(n=>{
+        const el = document.createElement("span");
+        el.className = "n";
+        el.textContent = pad2(n);
+        el.title = `saiu ${freqByNum[n]||0}x nos últimos ${HISTORICO.length} concursos`;
+        el.dataset.n = n;
+        nums.appendChild(el);
+      });
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn-check";
+      btn.textContent = "Conferir resultados";
+      btn.addEventListener("click", ()=>{
+        let hits = 0;
+        nums.querySelectorAll(".n").forEach(el=>{
+          if (winSet.has(parseInt(el.dataset.n,10))){
+            el.classList.add("hit");
+            hits++;
+          }
+        });
+        document.getElementById(`g-result-${group.id}`).textContent = `${hits} pontos`;
+        btn.disabled = true;
+      });
+
+      card.appendChild(top);
+      card.appendChild(nums);
+      card.appendChild(btn);
+      list.appendChild(card);
+    });
+  })();
+
+  })(); // fim do bloco assíncrono que espera os dados da API
+
+})();
+</script>
+</body>
+</html>
